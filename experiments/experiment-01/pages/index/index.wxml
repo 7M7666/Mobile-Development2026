@@ -1,0 +1,10 @@
+<!--index.wxml-->
+<navigation-bar title="HELLO {{wording}}" back="{{false}}" color="blue" background="#FFF"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+    lwl
+    <button bind:tap="onClick">点我！</button>
+    <image src="../../img/OIP.jpg" mode="widthFix"/>
+  </view>
+
+</scroll-view>
