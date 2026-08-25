@@ -1,0 +1,16 @@
+<!--index.wxml-->
+<navigation-bar title="个人名片" back="{{false}}" color="#24263a"
+background="#f5f6fb"></navigation-bar>
+<image src="../../img/card.png" mode="widthFix"/>
+<view class="card">Personal Card</view>
+<scroll-view scroll-y type="list">
+  <view class="profile">
+    <view class="title">关于我</view>
+    <view>你好，我是李宛霖，中国海洋大学数据科学与大数据技术学生。</view>
+    <view>白天和 Python、数据、算法斗智斗勇，晚上大概率在游戏世界里做一些完全不影响现实世界的重大决定。</view>
+    <view>我对很多东西都只有一个原则：先玩明白再说。</view>
+    <view>所以我也经常折腾各种新软件、新工具、和奇怪的数码功能。看到一个没用过的东西，我通常不是“以后有空再玩”，而是“怎么已经凌晨两点了”。</view>
+    <view>现实世界里，我喜欢滑雪。喜欢站在坡顶往下看的那几秒，也喜欢速度起来之后脑子里什么都不用想的感觉。相比按照攻略打卡，我更喜欢意料之外的风景。</view>
+    <view class="motto"> GAME & LIFE</view>
+  </view>
+</scroll-view>
