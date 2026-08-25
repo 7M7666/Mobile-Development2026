@@ -1,0 +1,41 @@
+<view
+  class="story"
+  style="padding-top: {{top}}px; padding-bottom: {{bottom}}px;"
+>
+  <view class="progress" aria-label="Story progress">
+    <view
+      wx:for="{{progress}}"
+      wx:key="index"
+      class="bar {{item.state}}"
+    ></view>
+  </view>
+
+  <view class="main">
+    <view
+      class="slide"
+      data-key="{{animationKey}}"
+    >
+      <text class="slide-num">{{slide.number}}</text>
+      <text class="slide-name">{{slide.name}}</text>
+      <text class="slide-index">INDEX {{currentSlide}}</text>
+    </view>
+
+    <view
+      wx:if="{{showTap}}"
+      class="tap-area"
+    >
+      <view
+        class="tap-left"
+        bindtap="previous"
+        aria-role="button"
+        aria-label="Previous Story"
+      ></view>
+      <view
+        class="tap-right"
+        bindtap="next"
+        aria-role="button"
+        aria-label="Next Story"
+      ></view>
+    </view>
+  </view>
+</view>
