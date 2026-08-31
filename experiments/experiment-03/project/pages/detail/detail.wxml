@@ -1,0 +1,25 @@
+<view class="detail">
+  <view class="detail-meta">
+    <text wx:if="{{news.category}}" class="detail-category">{{news.category}} · </text>
+    <text class="detail-date">{{news.add_date}}</text>
+  </view>
+
+  <text class="detail-title">{{news.title}}</text>
+  <text class="detail-source">中国海洋大学 · 观海听涛</text>
+
+  <image class="detail-image" src="{{news.poster}}" mode="aspectFill"></image>
+
+  <text class="detail-content">{{news.content}}</text>
+
+  <view class="detail-divider"></view>
+
+  <view class="detail-actions">
+    <view
+      class="collect-btn {{isCollected ? 'collect-active' : ''}}"
+      bindtap="toggleCollect"
+    >
+      <text>{{isCollected ? '♥ 已收藏' : '♡ 收藏本文'}}</text>
+    </view>
+    <button class="share-btn" open-type="share">分享</button>
+  </view>
+</view>

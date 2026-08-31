@@ -1,0 +1,97 @@
+<view class="home-header">
+  <view class="header-top">
+    <text class="header-date">{{currentDate}}</text>
+  </view>
+  <text class="school-en">OUC NEWS</text>
+  <text class="school-name">中国海洋大学新闻网</text>
+  <text class="header-subtitle">关注海大最新动态</text>
+</view>
+
+<swiper
+  class="banner"
+  indicator-dots="true"
+  autoplay="true"
+  interval="3000"
+  circular="true"
+>
+  <swiper-item
+    wx:for="{{bannerList}}"
+    wx:key="image"
+    data-id="{{item.id}}"
+    bindtap="goDetail"
+  >
+    <view class="banner-item">
+      <image class="banner-image" src="{{item.image}}" mode="aspectFill"></image>
+      <view class="banner-mask"></view>
+      <view class="banner-content">
+        <text class="featured-tag">FEATURED</text>
+        <text class="banner-title">{{item.title}}</text>
+      </view>
+    </view>
+  </swiper-item>
+</swiper>
+
+<view class="search-area">
+  <view class="search-box">
+    <input
+      class="search-input"
+      value="{{searchKeyword}}"
+      placeholder="搜索海大新闻"
+      bindinput="onSearchInput"
+    />
+    <text wx:if="{{searchKeyword}}" class="search-clear" bindtap="clearSearch">清除</text>
+  </view>
+</view>
+
+<view class="category-bar">
+  <text
+    class="category-item {{currentCategory === item ? 'category-active' : ''}}"
+    wx:for="{{categories}}"
+    wx:key="*this"
+    data-category="{{item}}"
+    bindtap="changeCategory"
+  >{{item}}</text>
+</view>
+
+<view class="section-header">
+  <view>
+    <text class="section-en">LATEST NEWS</text>
+    <text class="section-title">海大新闻</text>
+  </view>
+  <text class="section-count">{{filteredNewsList.length}} STORIES</text>
+</view>
+
+<view class="news-list">
+  <view
+    wx:if="{{filteredNewsList.length > 0}}"
+    class="lead-news"
+    data-id="{{filteredNewsList[0].id}}"
+    bindtap="goDetail"
+  >
+    <image class="lead-image" src="{{filteredNewsList[0].poster}}" mode="aspectFill"></image>
+    <view class="lead-info">
+      <text class="lead-meta">{{filteredNewsList[0].category}} · {{filteredNewsList[0].add_date}}</text>
+      <text class="lead-title">{{filteredNewsList[0].title}}</text>
+    </view>
+  </view>
+
+  <block wx:for="{{filteredNewsList}}" wx:key="id">
+    <view
+      wx:if="{{index > 0}}"
+      class="news-item"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <image class="news-image" src="{{item.poster}}" mode="aspectFill"></image>
+      <view class="news-info">
+        <text class="news-meta">{{item.category}} · {{item.add_date}}</text>
+        <text class="news-title">{{item.title}}</text>
+      </view>
+    </view>
+  </block>
+
+  <view wx:if="{{filteredNewsList.length === 0}}" class="empty-news">
+    <text class="empty-title">{{searchKeyword ? '未找到相关新闻' : '暂无相关新闻'}}</text>
+    <text wx:if="{{searchKeyword}}" class="empty-hint">换个关键词试试</text>
+  </view>
+</view>

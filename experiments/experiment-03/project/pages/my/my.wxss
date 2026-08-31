@@ -1,0 +1,277 @@
+.my-page {
+  min-height: 100vh;
+  padding: 28rpx;
+  box-sizing: border-box;
+  background: #f5f7fa;
+}
+
+.user-area {
+  background: #ffffff;
+}
+
+.guest-panel {
+  padding: 54rpx 36rpx 48rpx;
+  text-align: center;
+}
+
+.avatar-btn {
+  width: 148rpx;
+  height: 148rpx;
+  padding: 0;
+  border: 1rpx solid #d5e4f1;
+  border-radius: 74rpx;
+  background: #f5f9fc;
+  overflow: hidden;
+}
+
+.guest-avatar {
+  display: block;
+  width: 148rpx;
+  height: 148rpx;
+  border-radius: 74rpx;
+}
+
+.avatar-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #005bac;
+}
+
+.avatar-plus {
+  font-size: 46rpx;
+  line-height: 46rpx;
+  font-weight: 300;
+}
+
+.avatar-label {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 16rpx;
+  letter-spacing: 1rpx;
+}
+
+.avatar-hint {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 22rpx;
+  color: #667085;
+}
+
+.guest-title {
+  display: block;
+  margin-top: 38rpx;
+  font-size: 38rpx;
+  font-weight: bold;
+  color: #172033;
+}
+
+.guest-description {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  color: #667085;
+}
+
+.nickname-input {
+  height: 84rpx;
+  margin-top: 38rpx;
+  padding: 0 24rpx;
+  border: 1rpx solid #e5eaf0;
+  border-radius: 14rpx;
+  box-sizing: border-box;
+  text-align: left;
+  font-size: 28rpx;
+  color: #172033;
+  background: #ffffff;
+}
+
+.login-btn {
+  margin-top: 20rpx;
+  padding: 22rpx 0;
+  border-radius: 14rpx;
+  font-size: 29rpx;
+  font-weight: bold;
+  color: #ffffff;
+  background: #005bac;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 42rpx 32rpx 36rpx;
+  border: 1rpx solid #e5eaf0;
+  border-radius: 20rpx;
+  background: #ffffff;
+}
+
+.user-avatar {
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: 66rpx;
+}
+
+.user-name {
+  display: block;
+  margin-top: 20rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #172033;
+}
+
+.reader-label {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 20rpx;
+  letter-spacing: 2rpx;
+  color: #667085;
+}
+
+.profile-divider {
+  width: 100%;
+  height: 1rpx;
+  margin: 30rpx 0 22rpx;
+  background: #e5eaf0;
+}
+
+.collect-number {
+  font-size: 44rpx;
+  line-height: 52rpx;
+  font-weight: bold;
+  color: #005bac;
+}
+
+.collect-label {
+  margin-top: 4rpx;
+  font-size: 23rpx;
+  color: #667085;
+}
+
+.collect-area {
+  margin-top: 30rpx;
+  padding: 30rpx 28rpx 0;
+  background: #ffffff;
+}
+
+.history-area {
+  margin-top: 30rpx;
+  padding: 30rpx 28rpx 0;
+  background: #ffffff;
+}
+
+.collection-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-bottom: 18rpx;
+}
+
+.collection-en {
+  display: block;
+  font-size: 20rpx;
+  font-weight: bold;
+  letter-spacing: 2rpx;
+  color: #005bac;
+}
+
+.my-title {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #172033;
+}
+
+.collection-count {
+  padding-bottom: 4rpx;
+  font-size: 21rpx;
+  letter-spacing: 1rpx;
+  color: #667085;
+}
+
+.empty-state {
+  padding: 72rpx 30rpx 84rpx;
+  text-align: center;
+}
+
+.history-empty {
+  padding: 60rpx 30rpx 72rpx;
+  text-align: center;
+}
+
+.empty-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #172033;
+}
+
+.empty-text {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  line-height: 38rpx;
+  color: #667085;
+}
+
+.collect-item {
+  display: flex;
+  padding: 24rpx 0;
+  border-top: 1rpx solid #e5eaf0;
+}
+
+.collect-image {
+  width: 196rpx;
+  height: 138rpx;
+  border-radius: 16rpx;
+}
+
+.collect-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  margin-left: 22rpx;
+}
+
+.collect-meta {
+  display: flex;
+  font-size: 22rpx;
+}
+
+.collect-category {
+  color: #005bac;
+}
+
+.collect-date {
+  color: #667085;
+}
+
+.collect-title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 29rpx;
+  line-height: 41rpx;
+  font-weight: bold;
+  color: #172033;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.logout-area {
+  padding: 24rpx 0 8rpx;
+  text-align: center;
+}
+
+.logout-btn {
+  padding: 8rpx 26rpx;
+  border: 1rpx solid #dce3ea;
+  border-radius: 14rpx;
+  font-size: 24rpx;
+  color: #667085;
+  background: #f5f7fa;
+}

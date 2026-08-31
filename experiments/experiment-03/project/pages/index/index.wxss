@@ -1,0 +1,263 @@
+.home-header {
+  padding: 28rpx 32rpx 26rpx;
+  background: #ffffff;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 14rpx;
+}
+
+.header-date {
+  font-size: 22rpx;
+  color: #667085;
+}
+
+.school-en {
+  display: block;
+  font-size: 54rpx;
+  line-height: 1;
+  font-weight: bold;
+  letter-spacing: 2rpx;
+  color: #005bac;
+}
+
+.school-name {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 32rpx;
+  line-height: 46rpx;
+  font-weight: bold;
+  color: #172033;
+}
+
+.header-subtitle {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: #667085;
+}
+
+.banner {
+  height: 360rpx;
+  margin: 0 28rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+}
+
+.banner-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.banner-image {
+  width: 100%;
+  height: 100%;
+}
+
+.banner-mask {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(180deg, rgba(18, 48, 74, 0.02) 30%, rgba(18, 48, 74, 0.86) 100%);
+}
+
+.banner-content {
+  position: absolute;
+  right: 30rpx;
+  bottom: 38rpx;
+  left: 30rpx;
+}
+
+.featured-tag {
+  display: inline-block;
+  padding: 7rpx 14rpx;
+  border-radius: 8rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+  letter-spacing: 1rpx;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.banner-title {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 35rpx;
+  line-height: 48rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.search-area {
+  padding: 24rpx 28rpx 0;
+  background: #ffffff;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  height: 76rpx;
+  padding: 0 20rpx;
+  border-radius: 16rpx;
+  box-sizing: border-box;
+  background: #f5f7fa;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 26rpx;
+  color: #172033;
+}
+
+.search-clear {
+  margin-left: 16rpx;
+  font-size: 23rpx;
+  color: #005bac;
+}
+
+.category-bar {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 32rpx 28rpx 18rpx;
+  background: #ffffff;
+}
+
+.category-item {
+  padding: 10rpx 18rpx;
+  border-radius: 16rpx;
+  font-size: 24rpx;
+  color: #667085;
+}
+
+.category-active {
+  font-weight: bold;
+  color: #005bac;
+  background: #eaf3fb;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 30rpx 28rpx 18rpx;
+  background: #f5f7fa;
+}
+
+.section-en {
+  display: block;
+  font-size: 20rpx;
+  font-weight: bold;
+  letter-spacing: 2rpx;
+  color: #005bac;
+}
+
+.section-title {
+  display: block;
+  margin-top: 6rpx;
+  font-size: 38rpx;
+  font-weight: bold;
+  color: #172033;
+}
+
+.section-count {
+  padding-bottom: 4rpx;
+  font-size: 21rpx;
+  letter-spacing: 1rpx;
+  color: #667085;
+}
+
+.news-list {
+  padding: 0 28rpx 28rpx;
+  background: #f5f7fa;
+}
+
+.lead-news {
+  overflow: hidden;
+  border: 1rpx solid #e5eaf0;
+  border-radius: 20rpx;
+  background: #ffffff;
+}
+
+.lead-image {
+  display: block;
+  width: 100%;
+  height: 260rpx;
+}
+
+.lead-info {
+  padding: 24rpx;
+}
+
+.lead-meta,
+.news-meta {
+  display: block;
+  font-size: 22rpx;
+  color: #005bac;
+}
+
+.lead-title {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 36rpx;
+  line-height: 50rpx;
+  font-weight: bold;
+  color: #172033;
+}
+
+.news-item {
+  display: flex;
+  padding: 26rpx 0;
+  border-bottom: 1rpx solid #e5eaf0;
+}
+
+.news-image {
+  width: 204rpx;
+  height: 140rpx;
+  border-radius: 16rpx;
+}
+
+.news-info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  margin-left: 22rpx;
+}
+
+.news-title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 30rpx;
+  line-height: 42rpx;
+  font-weight: bold;
+  color: #172033;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.empty-news {
+  padding: 80rpx 0;
+  text-align: center;
+  color: #667085;
+}
+
+.empty-title {
+  display: block;
+  font-size: 26rpx;
+}
+
+.empty-hint {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 23rpx;
+  color: #667085;
+}
