@@ -1,0 +1,18 @@
+<navigation-bar title="MEOW PUSH" back="{{false}}" color="#4a3425" background="#fff8eb"></navigation-bar>
+<view class="page">
+  <button class="sound-toggle" bindtap="toggleSound">SOUND {{soundOn ? 'ON' : 'OFF'}}</button>
+  <view class="title-block">
+    <text class="title">MEOW PUSH</text>
+  </view>
+  <view class="hero-card">
+    <image class="hero-cat" src="/assets/cat/cat-home.png" mode="aspectFit" />
+    <view class="hello-bubble">HELLO</view>
+    <image class="hero-fish" src="/assets/fish/target-fish-blue.png" mode="aspectFit" />
+    <text class="hero-copy">Push the bowl to the fish.</text>
+  </view>
+  <view class="home-actions">
+    <button class="home-button" bindtap="startGame">{{primaryActionText}}</button>
+    <button class="home-button secondary" bindtap="openLevelSelect">LEVEL SELECT</button>
+  </view>
+  <text class="progress">{{clearedCount}} / 4 CLEARED</text>
+</view>

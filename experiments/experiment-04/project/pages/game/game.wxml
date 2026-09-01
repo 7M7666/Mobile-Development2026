@@ -1,0 +1,40 @@
+<navigation-bar title="MEOW PUSH" back-to-levels="{{true}}" color="#4a3425" background="#fff8eb"></navigation-bar>
+<view class="page">
+  <view class="game-header">
+    <view>
+      <text class="eyebrow">LEVEL {{levelId}}</text>
+      <text class="level-name">{{levelName}}</text>
+    </view>
+    <button class="game-sound-toggle" bindtap="toggleSound">SOUND {{soundOn ? 'ON' : 'OFF'}}</button>
+  </view>
+  <view class="stats" aria-label="游戏统计">
+    <view class="stat"><text class="stat-label">MOVES</text><text class="stat-value">{{moves}}</text></view>
+    <view class="stat"><text class="stat-label">PUSHES</text><text class="stat-value">{{pushes}}</text></view>
+    <view class="stat"><text class="stat-label">TIME</text><text class="stat-value">{{timeText}}</text></view>
+  </view>
+  <canvas id="gameCanvas" type="2d" class="game-canvas" bindtouchstart="handleCanvasTouchStart" bindtouchend="handleCanvasTouchEnd" aria-label="游戏棋盘，支持滑动控制"></canvas>
+  <text class="swipe-hint">SWIPE TO MOVE</text>
+
+  <view class="actions">
+    <button class="action-button" bindtap="undoMove" disabled="{{!hasUndo || isCleared || isBusy}}">UNDO</button>
+    <button class="action-button" bindtap="resetGame" disabled="{{isBusy}}">RESET</button>
+    <button class="action-button" bindtap="openLevelSelect" disabled="{{isBusy}}">LEVEL SELECT</button>
+  </view>
+
+  <view wx:if="{{isCleared}}" class="clear-overlay">
+    <view class="clear-panel">
+      <image class="clear-cat" src="/assets/cat/cat-idle-1.png" mode="aspectFit" />
+      <view class="clear-meow">MEOW!</view>
+      <text class="clear-title">{{isFinalLevel ? 'ALL LEVELS CLEARED' : 'LEVEL CLEAR'}}</text>
+      <text class="clear-subtitle">{{isFinalLevel ? 'DINNER IS SERVED!' : 'THE BOWL FOUND ITS FISH.'}}</text>
+      <view class="clear-stats">
+        <text>MOVES <text>{{moves}}</text></text>
+        <text>PUSHES <text>{{pushes}}</text></text>
+        <text>TIME <text>{{timeText}}</text></text>
+      </view>
+      <button wx:if="{{hasNextLevel}}" class="clear-button" bindtap="nextLevel">NEXT LEVEL</button>
+      <button class="clear-button" bindtap="resetGame">RETRY</button>
+      <button class="clear-button" bindtap="openLevelSelect">LEVEL SELECT</button>
+    </view>
+  </view>
+</view>

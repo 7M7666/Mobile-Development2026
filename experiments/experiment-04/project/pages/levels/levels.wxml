@@ -1,0 +1,29 @@
+<navigation-bar title="LEVEL SELECT" color="#4a3425" background="#fff8eb"></navigation-bar>
+<view class="page">
+  <view class="page-heading">
+    <text class="heading-title">PICK A BOWL</text>
+    <text class="heading-copy">HELP THE CAT SERVE DINNER</text>
+  </view>
+  <view class="level-list">
+    <button
+      wx:for="{{levelCards}}"
+      wx:key="id"
+      class="level-card {{item.locked ? 'locked' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="selectLevel"
+    >
+      <view class="level-main">
+        <view class="level-number"><text>{{item.displayId}}</text></view>
+        <view class="level-copy">
+          <text class="level-title">LEVEL {{item.displayId}}</text>
+          <text class="level-name">{{item.name}}</text>
+        </view>
+        <text class="level-status">{{item.status}}</text>
+      </view>
+      <view wx:if="{{item.status === 'CLEARED'}}" class="best-records">
+        <text>BEST MOVES {{item.bestMoves}}</text>
+        <text>BEST TIME {{item.bestTime}}</text>
+      </view>
+    </button>
+  </view>
+</view>
