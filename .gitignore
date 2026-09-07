@@ -3,3 +3,10 @@ Thumbs.db
 Desktop.ini
 .idea/
 project.private.config.json
+
+# Local SDK images and video-processing tools
+/experiments/experiment-05/system-image/
+/experiments/experiment-05/licenses/
+/project/demo_analysis/tools/
+/project/demo_analysis/ffmpeg-release-essentials.zip
+/project/demo_analysis/encoder_test.mp4

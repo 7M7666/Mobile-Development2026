@@ -1,0 +1,28 @@
+<scroll-view class="page-scroll" scroll-y enable-flex="true" show-scrollbar="false">
+<view class="detail-page theme-{{journey.theme}}" style="background: {{journey.themeColor}};">
+  <view class="detail-top"><view class="back" bindtap="goBack"><text>← BACK</text></view><text>SUMMER STOP</text></view>
+  <view wx:if="{{error}}" class="detail-error"><text>THIS STOP ISN'T IN THE ROUTE.</text></view>
+  <block wx:else>
+    <view class="place-title rise"><text>{{journey.name}}</text><text wx:if="{{journey.city}}">{{journey.city}}</text></view>
+    <view class="place-meta rise d1"><text>STOP {{journey.order}}</text><text>{{journey.dateLabel}}</text><text>{{journey.province || 'PROVINCE PENDING'}}</text></view>
+    <image wx:if="{{journey.coverPhoto}}" class="hero-photo rise d2" style="border: 8rpx solid #242522; box-sizing: border-box;" src="{{journey.coverPhoto.src}}" mode="aspectFill" bindtap="previewPhoto" data-src="{{journey.coverPhoto.src}}"></image>
+    <view wx:else class="hero-photo hero-empty rise d2"><text>THIS STOP'S<br/>COVER IS NEXT.</text></view>
+    <view class="note-block"><text class="note-kicker">JOURNEY NOTE</text><text wx:if="{{journey.intro}}" class="note-copy">{{journey.intro}}</text><text wx:else class="note-copy">这一站的旅程记录收在照片里。</text><text class="note-cn">这一站留下的照片，按真实比例重新排成一段小型旅行记录。</text></view>
+    <view wx:if="{{topMoment}}" class="moment-block"><text>TOP MOMENT</text><text>{{topMoment.title}}</text></view>
+    <view wx:if="{{tags.length}}" class="tag-list"><text wx:for="{{tags}}" wx:key="*this">#{{item}}</text></view>
+    <block wx:if="{{galleryRows.length}}">
+      <view class="section-title"><text>SELECTED PHOTOS</text><text>{{selectedPhotos.length}}</text></view>
+      <view class="photo-gallery">
+        <view wx:for="{{galleryRows}}" wx:for-item="row" wx:key="key" class="gallery-row" style="height: {{row.height}}rpx;">
+          <view wx:for="{{row.photos}}" wx:for-item="photo" wx:key="id" class="gallery-cell" style="width: {{photo.width}}rpx; height: {{row.height}}rpx;">
+            <image class="detail-photo" src="{{photo.src}}" mode="aspectFit" bindtap="previewPhoto" data-src="{{photo.src}}"></image>
+          </view>
+        </view>
+      </view>
+    </block>
+  </block>
+</view>
+
+</scroll-view>
+
+<app-nav active=""></app-nav>

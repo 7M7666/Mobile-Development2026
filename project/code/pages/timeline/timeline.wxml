@@ -1,0 +1,40 @@
+<scroll-view class="page-scroll" scroll-y enable-flex="true" show-scrollbar="false">
+<view class="timeline-page">
+  <view class="top-line"><text>SUMMER 2026</text><text>JOURNEY LOG</text></view>
+  <view class="title rise"><text>WHERE</text><text>IT WENT.</text></view>
+  <text class="journey-cn rise d1">按时间翻看每一站，让照片回到发生它的地方。</text>
+  <view class="filter-row rise d1">
+    <view
+      wx:for="{{filters}}"
+      wx:key="*this"
+      class="filter {{activeFilter == item ? 'filter-on' : ''}}"
+      data-filter="{{item}}"
+      bindtap="selectFilter"
+    ><text>{{item}}</text></view>
+  </view>
+
+  <view wx:if="{{emptyMessage}}" class="empty-filter">
+    <text>{{emptyMessage}}</text>
+    <text>THE ALL VIEW KEEPS THE CONFIRMED ROUTE IN ORDER.</text>
+  </view>
+
+  <view wx:else class="journey-list stagger">
+    <view wx:for="{{journeys}}" wx:key="id" class="journey-card journey-{{item.theme}}" style="border-top: 12rpx solid {{item.accent}};" data-id="{{item.id}}" bindtap="openDetail">
+      <view class="card-top"><text>STOP {{item.order}}</text><text>{{item.dateLabel}}</text></view>
+      <view class="card-title"><text>{{item.name}}</text><text wx:if="{{item.city}}">{{item.city}}</text></view>
+      <image wx:if="{{item.coverPhoto}}" class="cover" src="{{item.coverPhoto.src}}" mode="aspectFill"></image>
+      <view wx:else class="cover cover-empty"><text>PHOTO NOTE<br/>PENDING</text></view>
+      <view wx:if="{{item.photos.length}}" class="photo-strip">
+        <image wx:for="{{item.photos}}" wx:for-item="photo" wx:key="id" class="strip-photo" src="{{photo.src}}" mode="aspectFill"></image>
+      </view>
+      <view class="card-bottom">
+        <view><text class="memory-title">{{item.title}}</text><text class="memory-copy">{{item.memory}}</text></view>
+        <text class="card-arrow">→</text>
+      </view>
+      <view wx:if="{{item.tags.length}}" class="tag-row"><text wx:for="{{item.tags}}" wx:key="*this">#{{item}}</text></view>
+    </view>
+  </view>
+</view>
+
+</scroll-view>
+<app-nav active="journey"></app-nav>

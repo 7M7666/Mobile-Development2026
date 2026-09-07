@@ -1,0 +1,282 @@
+<block>
+  <view wx:if="{{slide.page == 'cover'}}" class="page cover" data-key="{{animationKey}}">
+    <view class="dots cover-dots" aria-hidden="true">
+      <view wx:for="{{dots}}" wx:key="*this" class="dot"></view>
+    </view>
+
+    <view class="cover-rings" aria-hidden="true">
+      <view class="ring ring-1"></view>
+      <view class="ring ring-2"></view>
+      <view class="ring ring-3"></view>
+      <view class="ring ring-4"></view>
+      <view class="ring ring-5"></view>
+    </view>
+
+    <view class="scribble cover-line" aria-hidden="true">
+      <view class="line line-1"></view>
+      <view class="line line-2"></view>
+      <view class="line line-3"></view>
+    </view>
+
+    <view class="cover-head">
+      <text class="eyebrow">MY SUMMER</text>
+      <text class="eyebrow">IN NUMBERS</text>
+    </view>
+
+    <view class="cover-title">
+      <text class="cover-summer">SUMMER</text>
+      <text class="cover-wrapped">WRAPPED</text>
+    </view>
+
+    <text class="cover-year">{{slide.year}}</text>
+
+    <view class="cover-bottom">
+      <view class="metrics">
+        <view class="metric">
+          <text class="metric-num">{{slide.days}}</text>
+          <text class="metric-name">DAYS</text>
+        </view>
+        <view class="metric">
+          <text class="metric-num">{{slide.placeCount}}</text>
+          <text class="metric-name">PLACES</text>
+        </view>
+        <view class="metric">
+          <text class="metric-num">{{slide.photoCount}}</text>
+          <text class="metric-name">PHOTOS</text>
+        </view>
+      </view>
+
+      <view class="start" catchtap="start" aria-role="button" aria-label="Start Story">
+        <text>{{canContinue ? 'START OVER' : 'START'}}</text>
+        <text class="start-arrow">→</text>
+      </view>
+      <view wx:if="{{canContinue}}" class="continue" catchtap="continueStory" aria-role="button" aria-label="Continue Story"><text>CONTINUE</text><text>→</text></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{slide.number == '02'}}" class="page intro" data-key="{{animationKey}}">
+    <image class="intro-photo" src="{{slide.coverPhoto.src}}" mode="aspectFill"></image>
+    <view class="dots intro-dots" aria-hidden="true">
+      <view wx:for="{{dots}}" wx:key="*this" class="dot"></view>
+    </view>
+
+    <view class="intro-stripes" aria-hidden="true">
+      <view class="intro-stripe stripe-1"></view>
+      <view class="intro-stripe stripe-2"></view>
+      <view class="intro-stripe stripe-3"></view>
+    </view>
+
+    <text class="intro-label">02 / OPENING NOTE</text>
+
+    <view class="intro-title">
+      <text>35 DAYS.</text>
+      <text>FOUR STOPS.</text>
+      <text>ONE SUMMER</text>
+      <text>THAT DIDN'T FOLLOW THE PLAN.</text>
+    </view>
+
+    <view class="scribble intro-line" aria-hidden="true">
+      <view class="line line-1"></view>
+      <view class="line line-2"></view>
+      <view class="line line-3"></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{slide.number == '03'}}" class="page days" data-key="{{animationKey}}">
+    <view class="days-head">
+      <text class="days-label">03 / THE SPAN</text>
+      <text class="days-note">SUMMER 2026</text>
+    </view>
+
+    <view class="days-range">
+      <text>{{slide.startDate.month}} {{slide.startDate.day}}</text>
+      <view class="days-range-line"></view>
+      <text>{{slide.endDate.month}} {{slide.endDate.day}}</text>
+    </view>
+
+    <text class="days-number">{{slide.days}}</text>
+    <view class="days-strip"><text>DAYS</text></view>
+
+    <view class="days-ruler" aria-hidden="true"><view wx:for="{{slide.ticks}}" wx:key="*this" class="days-tick {{item == 1 || item == 15 || item == 35 ? 'days-tick-on' : ''}}"></view></view>
+    <view class="span-months"><text>JUL / 15 DAYS</text><text>AUG / 20 DAYS</text></view>
+    <text class="slide-cn span-cn">从 7 月 17 日到 8 月 20 日，这个暑假一共走了 35 天。</text>
+
+    <view class="scribble days-line" aria-hidden="true">
+      <view class="line line-1"></view>
+      <view class="line line-2"></view>
+      <view class="line line-3"></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{slide.number == '04'}}" class="page timeline" data-key="{{animationKey}}">
+    <view class="ledger-head"><text>04 / WHERE IT WENT</text><text>JOURNEY LEDGER</text></view>
+    <view class="ledger"><view wx:for="{{slide.ledger}}" wx:key="number" class="ledger-row"><text>{{item.number}}</text><view><text>{{item.name}}</text><text>{{item.note}}</text></view><text>{{item.month}}</text></view></view>
+    <text class="ledger-copy">FOUR STOPS, IN ORDER.<br/>A SUMMER THAT KEPT MOVING.</text>
+  </view>
+
+  <view wx:elif="{{slide.number == '05'}}" class="page places" data-key="{{animationKey}}">
+    <view class="four-head"><text>05 / FOUR PLACES</text><text>04 / 04</text></view>
+    <view class="four-grid"><view wx:for="{{slide.places}}" wx:key="id" class="four-card four-card-{{index}}"><image src="{{item.photo.src}}" mode="aspectFill"></image><text>{{item.name}}</text></view></view>
+    <text class="four-copy">同一个暑假，<br/>在四个地方变成了四种不同的样子。</text>
+  </view>
+
+  <view wx:elif="{{slide.page == 'summer-map'}}" class="page summer-map" data-key="{{animationKey}}">
+    <view class="map-head">
+      <text class="map-label">06 / SUMMER MAP</text>
+      <text class="map-note">FOUR STOPS</text>
+    </view>
+
+    <view class="dots map-dots" aria-hidden="true">
+      <view wx:for="{{dots}}" wx:key="*this" class="dot"></view>
+    </view>
+
+    <view class="map-title">
+      <text>SUMMER</text>
+      <text>IN MOTION.</text>
+    </view>
+
+    <view class="map-space" aria-label="Editorial route connecting four summer places">
+      <view class="map-route map-route-1" aria-hidden="true"></view>
+      <view class="map-route map-route-2" aria-hidden="true"></view>
+      <view class="map-route map-route-3" aria-hidden="true"></view>
+
+      <view wx:for="{{slide.route}}" wx:key="number" class="map-stop map-stop-{{index}}">
+        <text class="map-stop-number">{{item.number}}</text>
+        <text class="map-stop-name">{{item.name}}</text>
+        <view class="map-marker" aria-hidden="true"></view>
+      </view>
+    </view>
+
+    <view class="map-stripe" aria-hidden="true"></view>
+    <text class="slide-cn map-cn">从广西一路到新疆，四站组成了这个暑假的移动轨迹。</text>
+    <view class="scribble map-line" aria-hidden="true">
+      <view class="line line-1"></view>
+      <view class="line line-2"></view>
+      <view class="line line-3"></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{slide.page == 'top-place'}}" class="page top-place" data-key="{{animationKey}}">
+    <view class="top-place-rebuild-head"><text>07 / MY TOP PLACE</text><text>SUMMER 2026</text></view>
+    <view class="top-place-rebuild-hero"><image src="{{slide.topPlace.photo.src}}" mode="aspectFill"></image><text>BAYINBULUKE</text></view>
+    <view class="top-place-rebuild-body"><text class="top-place-rebuild-label">MY TOP PLACE</text><view class="top-place-rebuild-stats"><view><text>BIGGEST DAY</text><text>AUG 01</text></view><view><text>500+ KM</text><text>ON THE ROAD</text></view><view><text>FIRST</text><text>1.5 KM GRASS SLIDE</text></view></view><text class="top-place-rebuild-why">{{slide.why}}</text></view>
+  </view>
+
+  <view wx:elif="{{slide.page == 'biggest'}}" class="page biggest" data-key="{{animationKey}}">
+    <view class="big-rings" aria-hidden="true">
+      <view class="ring ring-1"></view>
+      <view class="ring ring-2"></view>
+      <view class="ring ring-3"></view>
+      <view class="ring ring-4"></view>
+      <view class="ring ring-5"></view>
+    </view>
+
+    <view class="big-head">
+      <text class="big-eyebrow">● BIGGEST SUMMER DAY</text>
+    </view>
+
+    <view class="big-hero">
+      <view class="big-date">
+        <text class="big-month">{{slide.biggestDay.displayDate.month}}</text>
+        <text class="big-day">{{slide.biggestDay.displayDate.day}}</text>
+      </view>
+      <view class="big-title">
+        <text>THE DAY</text>
+        <text>EVERYTHING FELT</text>
+        <text>BIGGER.</text>
+      </view>
+    </view>
+    <image class="big-photo" src="{{slide.photo.src}}" mode="aspectFill"></image>
+
+      <view class="report">
+      <view class="report-head">
+        <text class="report-label">DAY REPORT</text>
+      </view>
+
+      <view class="report-stats">
+        <view wx:for="{{slide.biggestDay.stats}}" wx:key="label" class="report-stat stat-{{index}}">
+          <text class="report-num">{{item.value}}</text>
+          <text class="report-name">{{item.label}}</text>
+        </view>
+      </view>
+
+      <view class="report-copy en-copy">
+        <view wx:for="{{slide.biggestDay.copy}}" wx:key="*this">{{item}}</view>
+      </view>
+      <text class="big-why">WHY AUG 01? {{slide.why}}</text>
+    </view>
+    <view class="big-support"><text>AUG 01 / WHY IT STAYED</text><image src="{{slide.supportPhoto.src}}" mode="aspectFill"></image><text>路很长，风很大，记忆也最清楚。</text></view>
+
+    <view class="scribble big-line" aria-hidden="true">
+      <view class="line line-1"></view>
+      <view class="line line-2"></view>
+      <view class="line line-3"></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{slide.page == 'moments'}}" class="page moments" data-key="{{animationKey}}">
+    <view class="moments-head"><text class="moments-label">09 / TOP MOMENTS</text><text class="moments-count">{{slide.momentCount}} {{slide.momentLabel}}</text></view>
+    <text class="moments-title">THREE THINGS<br/>I KEPT<br/>REPLAYING.</text>
+    <view class="moment-list"><view wx:for="{{slide.moments}}" wx:key="number" class="moment moment-{{index}}"><image class="moment-photo" src="{{item.photo.src}}" mode="aspectFill" aria-label="{{item.name}}"></image><view class="moment-copy"><text class="moment-number">{{item.number}}</text><text class="moment-name">{{item.name}}</text></view></view></view>
+    <text class="slide-cn moments-cn">回头望望这个夏天，原来跳出来的就是这三个画面。</text>
+  </view>
+
+  <view wx:elif="{{slide.page == 'photo-number'}}" class="page photo-number" data-key="{{animationKey}}">
+    <view class="photo-number-head">
+      <text class="photo-number-label">10 / PHOTO NUMBER</text>
+      <text class="photo-number-moments">{{slide.momentCount}} {{slide.momentLabel}}.</text>
+    </view>
+
+    <text class="photo-count">{{slide.photoCount}}</text>
+    <view class="photo-word"><text>PHOTOS</text></view>
+    <text class="sample-label">{{slide.archivePhotoCount}} MADE THE ARCHIVE.</text>
+
+    <text class="slide-cn photo-cn">245 张，是整个暑假的拍摄总量。<br/>其中 30 张，最后进入了这份数字档案。</text>
+    <view class="photo-samples"><image wx:for="{{slide.photoSamples}}" wx:key="id" class="photo-sample sample-{{index}}" src="{{item.src}}" mode="aspectFill" aria-label="{{item.title}}"></image></view>
+
+    <view class="dots photo-number-dots" aria-hidden="true">
+      <view wx:for="{{dots}}" wx:key="*this" class="dot"></view>
+    </view>
+  </view>
+
+  <view wx:elif="{{slide.page == 'planned-reality'}}" class="page planned-reality" data-key="{{animationKey}}">
+    <view class="plan-rebuild-top"><text class="plan-rebuild-title">11 / PLANNED VS REALITY</text><view class="plan-rebuild-list"><text>SUMMER PLAN</text><text>☐ STUDY IELTS</text><text>☐ STAY ON TRACK</text><text>☐ FOLLOW THE PLAN</text><text>✕ IELTS PLAN</text></view><view class="plan-rebuild-tags"><text>GAMES</text><text>FRIENDS</text><text>FOOD</text><text>TRIPS</text></view><text class="plan-rebuild-won">REALITY WON.</text><text class="plan-rebuild-copy">计划写的是 IELTS，现实写成了 FRIENDS / GAMES / FOOD / TRIPS。</text></view>
+    <image class="plan-rebuild-photo" src="{{slide.realityPhoto.src}}" mode="aspectFill"></image>
+  </view>
+
+  <view wx:elif="{{slide.page == 'summer-type'}}" class="page summer-type" data-key="{{animationKey}}">
+    <text class="summer-type-rebuild-label">YOUR SUMMER TYPE</text>
+    <view class="summer-type-rebuild-name"><text>OFF</text><text>/</text><text>SCRIPT</text></view>
+    <view class="summer-type-rebuild-tags"><text wx:for="{{slide.summerType.tags}}" wx:key="*this">{{item}}</text></view>
+    <view class="summer-type-rebuild-facts"><view><text>PLAN</text><text>→</text><text>IELTS</text></view><view><text>REALITY</text><text>→</text><text>4 PLACES</text></view><view><text>WHAT FILLED IT</text><text>→</text><text>FRIENDS / FOOD /<br/>GAMES / TRIPS</text></view></view>
+    <view class="summer-type-rebuild-statement"><text>NOT ON THE PLAN.</text><text>STILL THE SUMMER.</text></view>
+    <view class="summer-type-rebuild-why"><text>WHY THIS TYPE?</text><text>计划里留着位置，日程之外更留着即兴的缝隙。<br/>朋友、食物和临时决定，所以这个夏天叫做 OFF SCRIPT。</text></view>
+  </view>
+
+  <view wx:elif="{{slide.page == 'soundtrack'}}" class="page soundtrack" data-key="{{animationKey}}">
+    <text class="sound-rebuild-label">12 / SUMMER SOUNDTRACK</text>
+    <text class="sound-rebuild-kicker">THREE SONGS. ONE SUMMER.</text>
+    <view class="sound-rebuild-feature" data-index="{{slide.activeTrackIndex}}" catchtap="selectTrack">
+      <text>{{slide.activeTrack.number}}</text>
+      <view><text>{{slide.activeTrack.title}}</text><text>{{slide.activeTrack.artist}}</text></view>
+      <view class="sound-rebuild-wave" aria-hidden="true"><view wx:for="{{dots}}" wx:key="*this"></view></view>
+    </view>
+    <view wx:for="{{slide.secondaryTracks}}" wx:for-item="track" wx:key="number" class="sound-rebuild-track {{slide.activeTrackIndex == track.index ? 'sound-rebuild-track-on' : ''}}" data-index="{{track.index}}" catchtap="selectTrack">
+      <text>{{track.number}}</text>
+      <view><text>{{track.title}}</text><text>{{track.artist}}</text><text>{{track.reason}}</text></view>
+    </view>
+    <text class="sound-rebuild-footer">LOUD / SOFT / ON THE MOVE</text>
+  </view>
+
+  <view wx:elif="{{slide.page == 'final'}}" class="page placeholder final-placeholder" data-key="{{animationKey}}" catchtap="stopStoryTap">
+    <view class="final-poster-columns"><view class="final-poster-photo-column"><image wx:for="{{slide.endingColumns.left}}" wx:key="id" src="{{item.src}}" mode="aspectFill"></image></view><view class="final-poster-copy"><text>14 / SUMMER WRAPPED</text><text>THIS WAS</text><text>MY SUMMER.</text><text>{{slide.finalPoster.year}}</text><text>{{slide.finalPoster.days}} DAYS</text><text>{{slide.finalPoster.placeCount}} PLACES</text><text>{{slide.finalPoster.photoCount}} PHOTOS</text></view><view class="final-poster-photo-column"><image wx:for="{{slide.endingColumns.right}}" wx:key="id" src="{{item.src}}" mode="aspectFill"></image></view></view>
+    <view class="poster-actions" style="z-index: 40;"><view class="final-action final-generate" catchtap="handlePosterAction" aria-role="button"><text>{{posterGenerating ? 'GENERATING...' : (posterPath ? 'PREVIEW POSTER' : 'GENERATE MY POSTER')}}</text></view><view wx:if="{{posterPath}}" class="final-action final-save" catchtap="savePoster" aria-role="button"><text>SAVE POSTER</text></view></view>
+    <view class="final-actions" style="z-index: 40;"><view class="final-action final-replay" catchtap="replay" aria-role="button"><text>PLAY AGAIN</text></view><view class="final-action final-cut" catchtap="openCut" aria-role="button"><text>MAKE YOUR CUT</text></view><view class="final-action final-summer" catchtap="backToSummer" aria-role="button"><text>BACK TO SUMMER</text></view></view>
+  </view>
+
+  <view wx:else class="page placeholder" data-key="{{animationKey}}">
+    <text class="slide-num">{{slide.number}}</text>
+    <text class="slide-name">{{slide.name}}</text>
+    <text class="slide-index">INDEX {{currentSlide}}</text>
+  </view>
+</block>

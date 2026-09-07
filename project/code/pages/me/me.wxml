@@ -1,0 +1,19 @@
+<scroll-view class="page-scroll" scroll-y enable-flex="true" show-scrollbar="false">
+<view class="archive">
+  <view class="archive-head"><text>SUMMER 2026</text><text>PERSONAL ARCHIVE</text></view>
+  <view class="archive-title"><text>MY SUMMER.</text><text>THE ARCHIVE.</text></view>
+  <view class="archive-ledger"><text>{{stats.capturedPhotoCount}} PHOTOS CAPTURED.</text><text>{{stats.curatedPhotoCount}} MADE THE ARCHIVE.</text><text class="archive-cn">从拍下到留下，这里收着这个暑假最想再看的片段。</text></view>
+  <view class="archive-collage"><image wx:for="{{archivePhotos}}" wx:key="id" class="archive-photo archive-photo-{{index}}" src="{{item.src}}" mode="aspectFill"></image><view class="archive-stamp"><text>SUMMER</text><text>2026</text></view></view>
+
+  <view class="section-head"><text>BROWSE BY PLACE</text><text>04 STOPS</text></view>
+  <view class="place-grid"><view wx:for="{{places}}" wx:key="id" class="place-card" data-id="{{item.id}}" bindtap="openDetail"><image src="{{item.photo.src}}" mode="aspectFill"></image><view><text>{{item.order}}</text><text>{{item.name}}</text><text>OPEN →</text></view></view></view>
+
+  <view class="section-head"><text>TOP MOMENTS</text><text>03 KEPT</text></view>
+  <view class="moment-list"><view wx:for="{{moments}}" wx:key="id" class="moment-row"><image src="{{item.photo.src}}" mode="aspectFill"></image><view><text>0{{item.order}}</text><text>{{item.title}}</text></view></view></view>
+
+  <view class="archive-tools"><view class="tool soundtrack" data-slide="11" bindtap="openWrappedSlide"><text>SOUNDTRACK</text><text>03 TRACKS →</text></view><view class="tool type" data-slide="12" bindtap="openWrappedSlide"><text>SUMMER TYPE</text><text>OFF SCRIPT →</text></view></view>
+  <view class="wrapped-entry" bindtap="openWrapped"><text>PLAY SUMMER WRAPPED</text><text>→</text></view>
+  <view class="cut-entry" bindtap="openCut"><text>MAKE YOUR CUT</text><text>WHAT DO YOU KEEP? →</text></view>
+</view>
+</scroll-view>
+<app-nav active="me"></app-nav>

@@ -1,0 +1,18 @@
+<scroll-view class="page-scroll" scroll-y enable-flex="true" show-scrollbar="false">
+<view class="home">
+  <view class="home-head"><text>SUMMER 2026</text><text>MAP / 04 STOPS</text></view>
+  <view class="home-title"><text>WHERE</text><text>IT WENT.</text></view>
+  <text class="home-cn">四个停靠点串起了从广西到新疆的这段夏天。</text>
+  <view class="map-frame">
+    <map class="summer-map" latitude="{{mapCenter.latitude}}" longitude="{{mapCenter.longitude}}" scale="{{mapScale}}" markers="{{markers}}" polyline="{{polyline}}" bindmarkertap="openMarker" show-location="false" enable-scroll="true" enable-zoom="true" enable-rotate="false"></map>
+    <view class="map-key"><text>● TAP A STOP</text><text>ROUTE / 01—04</text></view>
+  </view>
+  <view class="stop-ledger">
+    <view wx:for="{{stops}}" wx:key="id" class="stop-row" data-id="{{item.id}}" bindtap="openDetail">
+      <text>{{item.order}}</text><view><text>{{item.name}}</text><text>{{item.city}}</text></view><text>OPEN →</text>
+    </view>
+  </view>
+  <view class="journey-entry" bindtap="openJourney"><text>JOURNEY / BROWSE BY TIME</text><text>→</text></view>
+</view>
+</scroll-view>
+<app-nav active="map"></app-nav>

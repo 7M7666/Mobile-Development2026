@@ -1,6 +1,11 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/home/home",
+    "pages/timeline/timeline",
+    "pages/index/index",
+    "pages/me/me",
+    "pages/detail/detail",
+    "pages/cut/cut"
   ],
   "window": {
     "navigationBarTextStyle": "black",

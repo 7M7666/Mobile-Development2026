@@ -1,0 +1,12 @@
+<view class="app-nav">
+  <view
+    wx:for="{{items}}"
+    wx:key="key"
+    class="nav-item {{active == item.key ? 'nav-active' : ''}}"
+    data-key="{{item.key}}"
+    bindtap="goTo"
+  >
+    <text class="nav-mark">{{item.mark}}</text>
+    <text class="nav-label">{{item.label}}</text>
+  </view>
+</view>

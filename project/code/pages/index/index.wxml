@@ -1,6 +1,6 @@
 <view
-  class="story"
-  style="padding-top: {{top}}px; padding-bottom: {{bottom}}px;"
+  class="story theme-{{slide.page}} progress-{{slide.progressTheme}}"
+  style="height: {{viewportHeight}}px; min-height: {{viewportHeight}}px; padding-top: {{top}}px; padding-bottom: {{bottom}}px; background: {{slide.background}};"
 >
   <view class="progress" aria-label="Story progress">
     <view
@@ -10,32 +10,13 @@
     ></view>
   </view>
 
-  <view class="main">
-    <view
-      class="slide"
-      data-key="{{animationKey}}"
-    >
-      <text class="slide-num">{{slide.number}}</text>
-      <text class="slide-name">{{slide.name}}</text>
-      <text class="slide-index">INDEX {{currentSlide}}</text>
-    </view>
+  <view class="main" bindtap="tapStory" bindtouchstart="touchStart" bindtouchend="touchEnd">
+    <include src="./slides.wxml" />
 
-    <view
-      wx:if="{{showTap}}"
-      class="tap-area"
-    >
-      <view
-        class="tap-left"
-        bindtap="previous"
-        aria-role="button"
-        aria-label="Previous Story"
-      ></view>
-      <view
-        class="tap-right"
-        bindtap="next"
-        aria-role="button"
-        aria-label="Next Story"
-      ></view>
-    </view>
   </view>
+
+  <view class="story-exit" style="top: {{top}}px;" bindtap="exitWrapped" aria-role="button" aria-label="Exit Summer Wrapped">
+    <text>×</text>
+  </view>
+  <canvas id="summer-poster-canvas" type="2d" class="poster-canvas" width="1080" height="1920"></canvas>
 </view>

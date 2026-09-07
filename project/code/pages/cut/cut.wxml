@@ -1,0 +1,53 @@
+<view class="cut theme-{{vibe}}" style="padding-top: {{top}}px; padding-bottom: {{bottom}}px;">
+  <scroll-view wx:if="{{mode == 'input'}}" class="cut-scroll" scroll-y="true" show-scrollbar="false">
+    <view class="cut-mark"><view class="back" bindtap="goBack"><text>← BACK</text></view><text>THE CUTTING ROOM</text></view>
+    <view class="cut-title"><text>YOUR</text><text>SUMMER CUT.</text></view>
+
+    <view class="cut-step"><text>01 / WHAT DO YOU KEEP?</text><text wx:if="{{selectionHint}}">PICK A PLACE FIRST.</text></view>
+    <view class="place-picker">
+      <view wx:for="{{places}}" wx:key="id" class="place-tile place-tile-{{index}} {{selectedPlace == item.id ? 'place-on' : ''}}" data-id="{{item.id}}" data-query="{{item.query}}" bindtap="pickPlace">
+        <image src="{{item.photo.src}}" mode="aspectFill"></image>
+        <view class="place-tile-copy"><text>{{item.number}}</text><text>{{item.name}}</text><text wx:if="{{selectedPlace == item.id}}">KEPT ●</text></view>
+      </view>
+    </view>
+
+    <view class="cut-step feel-step"><text>02 / NOW PICK THE FEEL.</text><text>{{vibeLabel}}</text></view>
+    <view class="vibe-grid">
+      <view wx:for="{{vibes}}" wx:key="id" class="vibe-tile vibe-{{item.id}} {{vibe == item.id ? 'vibe-on' : ''}}" data-vibe="{{item.id}}" bindtap="pickVibe">
+        <text>{{item.number}}</text><text>{{item.label}}</text><text>{{item.note}}</text>
+      </view>
+    </view>
+
+    <view class="make-cut" bindtap="makeCut"><text>MAKE THE CUT</text><text>→</text></view>
+  </scroll-view>
+
+  <scroll-view wx:else class="cut-scroll result" scroll-y="true" show-scrollbar="false">
+    <view class="cut-mark"><view class="back" bindtap="makeAnother"><text>← EDIT AGAIN</text></view><text>THE CUTTING ROOM</text></view>
+    <view wx:if="{{empty}}" class="empty-state"><text>NOTHING</text><text>MADE THE CUT.</text><view class="make-cut" bindtap="makeAnother"><text>TRY ANOTHER PLACE</text><text>→</text></view></view>
+    <view wx:else class="result-body">
+      <view class="result-title"><text>YOUR CUT.</text><text>{{resultPhotos.length}} PHOTOS</text><text>{{placeLabel}} × {{vibeLabel}}</text></view>
+      <view class="cut-mosaic">
+        <view wx:for="{{resultPhotos}}" wx:key="id" class="cut-photo cut-photo-{{index}}" bindtap="previewPhoto" data-src="{{item.src}}"><image src="{{item.src}}" mode="aspectFill"></image><text>{{item.rank}}</text></view>
+      </view>
+       <view class="result-copy"><text>THIS IS</text><text>HOW YOU SAW</text><text>MY SUMMER.</text></view>
+       <text class="result-summary">{{cut.copy.summary}}</text>
+       <view class="why-cut" bindtap="toggleWhy" aria-role="button" aria-label="Explain selected photos">
+         <view><text>WHY THESE PHOTOS?</text><text>{{showWhy ? '↑' : '↓'}}</text></view>
+         <view wx:if="{{showWhy}}" class="why-list">
+           <view wx:for="{{resultPhotos}}" wx:key="id" class="why-photo">
+             <text>{{item.rank}} / {{item.title}}</text>
+             <text>TOTAL SCORE {{item.score}}</text>
+             <view><text wx:if="{{item.scoreBreakdown.placeMatch}}">PLACE +{{item.scoreBreakdown.placeMatch}}</text><text wx:if="{{item.scoreBreakdown.vibeMatch}}">VIBE +{{item.scoreBreakdown.vibeMatch}}</text><text>PRIORITY +{{item.scoreBreakdown.priority}}</text></view>
+           </view>
+         </view>
+       </view>
+       <view wx:if="{{!empty && resultPhotoIds.length}}" class="poster-cut-controls">
+         <view class="poster-cut-explainer"><text>POSTER PREVIEW</text><text>A GENERATED POSTER BASED ON THIS CUT.</text><text>USES ALL 5 SELECTED PHOTOS FROM YOUR CUT.</text></view>
+         <view class="return-actions poster-ready-actions"><view catchtap="previewPoster" aria-role="button"><text>{{posterStatus == 'generating' ? 'GENERATING...' : 'PREVIEW POSTER'}}</text></view><view catchtap="savePoster" aria-role="button"><text>{{posterStatus == 'saving' ? 'SAVING...' : 'SAVE CUT POSTER'}}</text></view></view>
+       </view>
+     </view>
+    <view class="make-cut make-another" bindtap="makeAnother"><text>MAKE ANOTHER CUT</text><text>→</text></view>
+    <view class="return-actions"><view bindtap="goBack"><text>BACK TO ARCHIVE</text></view><view bindtap="openWrapped"><text>PLAY WRAPPED</text></view><view bindtap="resetCut"><text>RESET CUT</text></view></view>
+  </scroll-view>
+  <canvas id="cut-poster-canvas" type="2d" class="cut-poster-canvas" width="1080" height="1920"></canvas>
+</view>
