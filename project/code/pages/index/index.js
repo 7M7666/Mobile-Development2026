@@ -1,6 +1,10 @@
 const summer = require('../../data/summer2026')
 const state = require('../../services/summer-state')
 const poster = require('../../services/summer-poster')
+const visitor = require('../../services/visitor-state')
+const cut = require('../../services/your-cut')
+const navigation = require('../../services/navigation')
+const files = require('../../services/piece-files')
 
 const photoById = summer.photos.reduce((result, photo) => {
   result[photo.id] = photo
@@ -183,7 +187,7 @@ const slides = [
     year: storyFacts.year,
     topPlace: { ...topPlace, photo: photoById['xinjiang-grassland'] },
     reasons: ['BIGGEST DAY / AUG 01', '500+ KM ON THE ROAD', 'FIRST 1.5 KM GRASS SLIDE'],
-    why: '这一站最远，路上花的时间最多，看到的风景也最开阔。整个暑假里最特别的一天也发生在这里，所以最后留下来的 Top Place，是巴音布鲁克。'
+    why: '最远的一站，最开阔的风景。'
   },
   {
     number: '08',
@@ -273,25 +277,25 @@ const slides = [
   }
 ]
 
-function getSlide(index, activeTrackIndex = 0) {
-  const slide = { ...slides[index], background: slideBackgrounds[slides[index].number] || '#ECEDE7' }
+function getSlide(index, summary = visitor.getWrappedSummary()) {
+  const background = slideBackgrounds[slides[index].number] || '#ECEDE7'
+  const slide = { ...slides[index], visitor: summary, background, progressTheme: background === '#242522' ? 'light' : 'dark' }
 
   if (slide.page === 'final') {
-    return { ...slide, endingColumns: getFinalPosterColumns() }
+    return { ...slide, endingColumns: getFinalPosterColumns(), cutModel: cut.getModel() }
   }
 
   if (slide.page !== 'soundtrack') return slide
 
   const tracks = slide.soundtrack.tracks
+  const activeTrackIndex = summary.soundtrack ? summary.soundtrack.index : 0
 
   return {
     ...slide,
     activeTrackIndex,
     activeTrack: tracks[activeTrackIndex],
-    secondaryTracks: tracks.slice(1).map((track, trackIndex) => ({
-      ...track,
-      index: trackIndex + 1
-    }))
+    secondaryTracks: tracks.map((track, index) => ({ ...track, index }))
+      .filter((track) => track.index !== activeTrackIndex)
   }
 }
 
@@ -324,8 +328,9 @@ function getSafeArea() {
   return {
     top,
     bottom,
-    viewportHeight: screenHeight || info.windowHeight,
-    viewportWidth: info.windowWidth || 0
+    viewportHeight: info.windowHeight || screenHeight,
+    viewportWidth: info.windowWidth || 0,
+    contentHeight: Math.max(0, (info.windowHeight || screenHeight) - top - bottom - 37 * (info.windowWidth || 375) / 750)
   }
 }
 
@@ -339,49 +344,12 @@ function getStoredState() {
 }
 
 function getFinalPosterColumns() {
-  const stored = getStoredState()
-  const usedPhotoIds = new Set()
-  const photos = stored.yourCut.resultPhotoIds
-    .map((id) => photoById[id])
-    .concat(endingPhotos)
-    .filter((photo) => {
-      if (!photo || usedPhotoIds.has(photo.id)) return false
-      usedPhotoIds.add(photo.id)
-      return true
-    })
-    .slice(0, 8)
-
-  return {
-    left: photos.slice(0, 4),
-    right: photos.slice(4, 8)
-  }
+  const model = cut.getModel()
+  const photos = model.order.filter((id) => id !== 'piece').map((id) => photoById[id])
+  return { left: photos.slice(0, 2), right: photos.slice(2) }
 }
 
-function getPosterModel() {
-  const stored = getStoredState()
-  const selectedPhotos = stored.yourCut.resultPhotoIds
-    .map((id) => photoById[id])
-    .filter(Boolean)
-  const usedPhotoIds = new Set()
-  const photos = selectedPhotos
-    .concat(posterFallbackPhotos)
-    .filter((photo) => {
-      if (usedPhotoIds.has(photo.id)) return false
-      usedPhotoIds.add(photo.id)
-      return true
-    })
-    .slice(0, 4)
-
-  return {
-    days: summer.meta.inclusiveDays,
-    placeCount: summer.places.length,
-    photoCount: summer.summary.photoCount,
-    topPlace: topPlace.name,
-    summerType: summerType.name,
-    photos,
-    usingYourCut: selectedPhotos.length > 0
-  }
-}
+function getPosterModel() { return cut.getModel() }
 
 function getSaveFailureType(error) {
   const message = String(error && (error.errMsg || error.message) || '').toLowerCase()
@@ -395,50 +363,59 @@ function handlePosterSaveFailure(error) {
   const type = getSaveFailureType(error)
 
   if (type === 'cancelled') {
-    wx.showToast({ title: 'SAVE CANCELLED', icon: 'none' })
+    wx.showToast({ title: '已取消保存', icon: 'none' })
     return
   }
 
   if (type === 'permission') {
     if (!wx.showModal) {
-      wx.showToast({ title: 'PHOTO ACCESS NEEDED', icon: 'none' })
+      wx.showToast({ title: '需要相册权限', icon: 'none' })
       return
     }
 
     wx.showModal({
-      title: 'PHOTO ACCESS NEEDED',
-      content: 'Allow photo access in Settings to save this poster.',
-      confirmText: 'OPEN SETTINGS',
-      cancelText: 'NOT NOW',
+      title: '需要相册权限',
+      content: '请在设置中允许保存到相册，再保存这张海报。',
+      confirmText: '设置',
+      cancelText: '取消',
       success: (result) => {
-        if (result.confirm && wx.openSetting) wx.openSetting({})
-      }
+        if (result.confirm && wx.openSetting) wx.openSetting({
+          fail: () => wx.showToast({ title: '暂时无法打开设置', icon: 'none' })
+        })
+      },
+      fail: () => wx.showToast({ title: '需要相册权限', icon: 'none' })
     })
     return
   }
 
-  wx.showToast({ title: 'SAVE FAILED', icon: 'none' })
+  wx.showToast({ title: '保存失败，请重试', icon: 'none' })
 }
 
 Page({
   data: {
     currentSlide: 0,
+    detailSheet: '',
     totalSlides: slides.length,
     animationKey: 0,
-    slide: getSlide(0),
+    slide: getSlide(0, visitor.getWrappedSummary(visitor.getDefaultState())),
     progress: getProgress(0),
     dots: Array.from({ length: 20 }, (item, index) => index),
     top: 0,
     bottom: 0,
     viewportHeight: 0,
     viewportWidth: 0,
+    contentHeight: 0,
+    trackSaveNotice: '',
     canContinue: false,
     continueSlide: 0,
     posterGenerating: false,
-    posterPath: ''
+    posterPath: '',
+    posterKey: ''
   },
 
   onLoad(options = {}) {
+    this.active = true
+    this.visibilityId = 0
     this.setSafeArea()
     this.setPageBackground(this.data.slide)
     const stored = getStoredState()
@@ -455,8 +432,35 @@ Page({
   },
 
   onShow() {
-    if (this.data.currentSlide !== slides.length - 1) return
-    this.setData({ slide: getSlide(this.data.currentSlide) })
+    this.active = true
+    this.navigating = false
+    this.syncPoster()
+    const changes = { slide: getSlide(this.data.currentSlide), trackSaveNotice: '' }
+    if (this.data.currentSlide === 0) {
+      const savedSlide = getStoredState().story.currentSlide
+      changes.canContinue = savedSlide > 0 && savedSlide < slides.length - 1
+      changes.continueSlide = changes.canContinue ? savedSlide : 0
+    }
+    this.setData(changes)
+  },
+
+  onHide() { this.active = false; this.visibilityId += 1; this.touchCancel(); this.setData({ detailSheet: '' }) },
+
+  onUnload() {
+    this.active = false
+    this.visibilityId += 1
+    this.unloaded = true
+    this.posterRequestId = (this.posterRequestId || 0) + 1
+  },
+
+  syncPoster() {
+    const key = getPosterModel().signature
+    if (key !== this.data.posterKey) {
+      this.posterRequestId = (this.posterRequestId || 0) + 1
+      this.posterGeneration = null
+      this.setData({ posterPath: '', posterKey: key, posterGenerating: false })
+    }
+    return key
   },
 
   setSafeArea() {
@@ -464,16 +468,19 @@ Page({
   },
 
   goTo(index) {
+    if (!Number.isInteger(index)) return
     const last = this.data.totalSlides - 1
     const current = Math.min(Math.max(index, 0), last)
 
     if (current === this.data.currentSlide) {
+      this.setData({ slide: getSlide(current) })
       return
     }
 
     const slide = getSlide(current)
     this.setData({
       currentSlide: current,
+      detailSheet: '',
       slide,
       progress: getProgress(current),
       animationKey: this.data.animationKey + 1
@@ -493,14 +500,39 @@ Page({
   },
 
   next() {
+    if (this.data.detailSheet) return
     this.goTo(this.data.currentSlide + 1)
   },
 
   previous() {
+    if (this.data.detailSheet) return
     this.goTo(this.data.currentSlide - 1)
   },
 
+  openDetailSheet(event) {
+    const kind = event.currentTarget.dataset.kind
+    const allowed = { route: 3, decision: 7, preview: 9, plan: 10, evidence: 12 }
+    if (allowed[kind] !== this.data.currentSlide) return
+    const v = this.data.slide.visitor
+    if (!(kind === 'route' ? v.route : kind === 'decision' ? v.decision : kind === 'preview' ? v.previewCount > 0 : kind === 'plan' ? v.routeNarrative : v.evidence.length)) return
+    this.touchCancel()
+    this.setData({ detailSheet: kind })
+  },
+
+  closeDetailSheet() { this.touchCancel(); this.setData({ detailSheet: '' }) },
+  stopSheetTouch() {},
+
+  isControl(event) {
+    return Boolean(event && ((event.mark && event.mark.storyControl === 'cta') ||
+      (event.target && event.target.dataset && event.target.dataset.storyControl === 'cta')))
+  },
+
   touchStart(event) {
+    this.controlTouch = Boolean(this.data.detailSheet) || this.isControl(event)
+    if (this.controlTouch) { this.touchOrigin = null; this.suppressStoryTap = true; return }
+    this.suppressStoryTap = false
+    this.soundtrackControlTouch = this.data.currentSlide === 11 && event.mark && event.mark.storyControl === 'soundtrack'
+    this.suppressTrackTap = false
     const touch = event.touches && event.touches[0]
     this.touchOrigin = touch ? {
       x: Number.isFinite(touch.pageX) ? touch.pageX : touch.clientX,
@@ -509,6 +541,7 @@ Page({
   },
 
   touchEnd(event) {
+    if (this.controlTouch || this.isControl(event)) { this.touchOrigin = null; this.suppressStoryTap = true; return }
     const touch = event.changedTouches && event.changedTouches[0]
     if (!touch || !this.touchOrigin) return
     const endX = Number.isFinite(touch.pageX) ? touch.pageX : touch.clientX
@@ -516,12 +549,27 @@ Page({
     const deltaX = endX - this.touchOrigin.x
     const deltaY = endY - this.touchOrigin.y
     this.touchOrigin = null
+    if (this.soundtrackControlTouch) {
+      this.suppressStoryTap = true
+      this.suppressTrackTap = Math.max(Math.abs(deltaX), Math.abs(deltaY)) >= 12
+    }
+    if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) >= 12) this.suppressStoryTap = true
     if (Math.abs(deltaX) < 48 || Math.abs(deltaX) < Math.abs(deltaY)) return
+    this.suppressStoryTap = true
     if (deltaX < 0) this.next()
     else this.previous()
   },
 
+  touchCancel() {
+    this.touchOrigin = null
+    this.suppressStoryTap = true
+    if (this.soundtrackControlTouch) this.suppressTrackTap = true
+  },
+
   tapStory(event) {
+    if (this.data.detailSheet || this.isControl(event) || this.controlTouch || this.data.currentSlide === 13) return
+    if (this.data.currentSlide === 11 && (this.soundtrackControlTouch || (event.mark && event.mark.storyControl === 'soundtrack'))) return
+    if (this.suppressStoryTap) return
     const x = event.detail && Number.isFinite(event.detail.x) ? event.detail.x : 0
 
     if (x > 0 && x < this.data.viewportWidth / 2) {
@@ -540,22 +588,20 @@ Page({
     this.goTo(this.data.continueSlide)
   },
 
-  openCut() {
-    wx.navigateTo({
-      url: '/pages/cut/cut',
-      fail: () => wx.showToast({ title: 'CUT COULDN’T OPEN', icon: 'none' })
-    })
-  },
+  openCut() { navigation.openPage(this, '/pages/cut/cut') },
 
   stopStoryTap() {},
+  stopControlTouch() { this.touchOrigin = null; this.suppressStoryTap = true },
 
   selectTrack(event) {
+    if (this.data.currentSlide !== 11 || this.suppressTrackTap) return
     const activeTrackIndex = Number(event.currentTarget.dataset.index)
     const soundtrackSlide = slides[11]
 
     if (!Number.isInteger(activeTrackIndex) || !soundtrackSlide.soundtrack.tracks[activeTrackIndex]) return
 
-    this.setData({ activeTrackIndex, slide: getSlide(11, activeTrackIndex) })
+    const result = visitor.setSoundtrack(soundtrackSlide.soundtrack.tracks[activeTrackIndex].number)
+    this.setData({ activeTrackIndex, slide: getSlide(11), trackSaveNotice: result.persisted ? '已留下这首歌' : '暂存本次访问，未能写入本地；点选歌曲可重试。' })
   },
 
   exitWrapped() {
@@ -581,50 +627,91 @@ Page({
     })
   },
 
-  async generatePoster() {
-    if (this.data.posterGenerating) return
-
+  generatePoster() {
+    if (this.unloaded) return Promise.resolve('')
+    const key = this.syncPoster()
+    if (this.data.posterPath) return Promise.resolve(this.data.posterPath)
+    if (this.posterGeneration) return this.posterGeneration
+    const requestId = (this.posterRequestId || 0) + 1
+    this.posterRequestId = requestId
+    const model = getPosterModel()
     this.setData({ posterGenerating: true })
-
-    try {
-      const canvas = await this.getPosterCanvas()
-      if (!canvas) throw new Error('Canvas unavailable')
-      const posterPath = await poster.generateSummerPoster(canvas, getPosterModel())
-      this.setData({ posterPath })
-    } catch (error) {
-      wx.showToast({ title: 'POSTER COULDN’T GENERATE', icon: 'none' })
-    } finally {
-      this.setData({ posterGenerating: false })
-    }
+    files.retain(model.piece.localFilePath)
+    this.posterGeneration = (async () => {
+      try {
+        if (model.piece.type === 'photo' && !await cut.checkPhoto(model.piece.localFilePath)) throw Error('请重新选择照片')
+        const canvas = await this.getPosterCanvas()
+        if (!canvas) throw new Error('Canvas unavailable')
+        if (this.unloaded || requestId !== this.posterRequestId || key !== getPosterModel().signature) return ''
+        const posterPath = await poster.generateYourCutPoster(canvas, model)
+        if (this.unloaded || requestId !== this.posterRequestId || key !== getPosterModel().signature) return ''
+        this.setData({ posterPath })
+        return posterPath
+      } catch (error) {
+        if (!this.unloaded && requestId === this.posterRequestId) {
+          console.error('[SUMMER POSTER] generation failed', error)
+          wx.showToast({ title: '海报生成失败，请重试', icon: 'none' })
+        }
+        return ''
+      } finally {
+        files.release(model.piece.localFilePath)
+        if (!this.unloaded && requestId === this.posterRequestId) {
+          this.posterGeneration = null
+          this.setData({ posterGenerating: false })
+        }
+      }
+    })()
+    return this.posterGeneration
   },
 
   handlePosterAction() {
-    if (this.data.posterPath) {
-      this.previewPoster()
-      return
-    }
-
-    this.generatePoster()
+    this.syncPoster()
+    if (this.data.posterPath) return this.previewPoster()
+    return this.generatePoster()
   },
 
-  previewPoster() {
-    if (!this.data.posterPath) return
-    wx.previewImage({ current: this.data.posterPath, urls: [this.data.posterPath] })
-  },
-
-  savePoster() {
-    if (!this.data.posterPath) return
-    wx.saveImageToPhotosAlbum({
-      filePath: this.data.posterPath,
-      success: () => wx.showToast({ title: 'SAVED TO PHOTOS', icon: 'none' }),
-      fail: handlePosterSaveFailure
+  async previewPoster() {
+    if (this.previewing) return
+    this.previewing = true
+    const visibility = this.visibilityId
+    try {
+    const posterPath = await this.generatePoster()
+    if (!posterPath || this.unloaded || !this.active || visibility !== this.visibilityId || this.data.posterKey !== getPosterModel().signature) return
+    wx.previewImage({
+      current: posterPath,
+      urls: [posterPath],
+      fail: () => wx.showToast({ title: '预览失败，请重试', icon: 'none' })
     })
+    } finally { this.previewing = false }
+  },
+
+  async savePoster() {
+    if (this.posterSaving) return
+    this.posterSaving = true
+    const visibility = this.visibilityId
+    try {
+      const posterPath = await this.generatePoster()
+      if (!posterPath || this.unloaded || !this.active || visibility !== this.visibilityId || this.data.posterKey !== getPosterModel().signature) return
+      await new Promise((resolve, reject) => wx.saveImageToPhotosAlbum({
+        filePath: posterPath,
+        success: resolve,
+        fail: reject
+      }))
+      if (!this.unloaded && this.active && visibility === this.visibilityId) wx.showToast({ title: '已保存到相册', icon: 'none' })
+    } catch (error) {
+      if (!this.unloaded && this.active && visibility === this.visibilityId) handlePosterSaveFailure(error)
+    } finally {
+      this.posterSaving = false
+    }
   },
 
   replay() {
     const slide = getSlide(0)
     this.setData({
       currentSlide: 0,
+    detailSheet: '',
+      canContinue: false,
+      continueSlide: 0,
       slide,
       progress: getProgress(0),
       animationKey: this.data.animationKey + 1

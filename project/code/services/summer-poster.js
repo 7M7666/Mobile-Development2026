@@ -1,5 +1,6 @@
 const POSTER_WIDTH = 1080
 const POSTER_HEIGHT = 1920
+const cutExports = new WeakMap()
 
 function getAspectFillCrop(sourceWidth, sourceHeight, targetWidth, targetHeight) {
   const sourceAspect = sourceWidth / sourceHeight
@@ -134,7 +135,7 @@ function drawPoster(canvas, model, images) {
   ctx.fillText(model.usingYourCut ? 'MADE FROM YOUR SELECTION' : 'MADE FROM SUMMER 2026', 60, 1886)
 }
 
-function drawYourCutPhoto(ctx, image, slot, index, themeColor) {
+function drawYourCutPhoto(ctx, image, slot, index, user = false) {
   const [x, y, width, height, degrees] = slot
   const inset = 12
 
@@ -143,56 +144,74 @@ function drawYourCutPhoto(ctx, image, slot, index, themeColor) {
   ctx.rotate(degrees * Math.PI / 180)
   ctx.fillStyle = '#242522'
   ctx.fillRect(-width / 2, -height / 2, width, height)
-  drawPhoto(ctx, image, -width / 2 + inset, -height / 2 + inset, width - inset * 2, height - inset * 2, index, themeColor)
+  drawPhoto(ctx, image, -width / 2 + inset, -height / 2 + inset, width - inset * 2, height - inset * 2, index)
   ctx.fillStyle = '#A8D900'
-  ctx.fillRect(-width / 2 + inset, -height / 2 + inset, 58, 42)
+  ctx.fillRect(-width / 2 + inset, -height / 2 + inset, user ? 190 : 58, 42)
   ctx.fillStyle = '#242522'
   ctx.font = '900 22px sans-serif'
-  ctx.fillText(`0${index + 1}`, -width / 2 + inset + 9, -height / 2 + inset + 29)
+  ctx.fillText(user ? 'YOUR PIECE' : `0${index + 1}`, -width / 2 + inset + 9, -height / 2 + inset + 29)
+  ctx.restore()
+}
+
+function drawFittedText(ctx, value, x, y, width, height, size = 34) {
+  const chars = Array.from(String(value))
+  let lines, fontSize = size
+  do {
+    ctx.font = '700 ' + fontSize + 'px sans-serif'
+    lines = []; let line = ''
+    chars.forEach((char) => {
+      if (char === '\n' || (line && ctx.measureText(line + char).width > width)) { lines.push(line); line = char === '\n' ? '' : char }
+      else line += char
+    })
+    if (line) lines.push(line)
+    if (lines.length * fontSize * 1.35 <= height || fontSize <= 14) break
+    fontSize -= 2
+  } while (true)
+  const maxLines = Math.max(0, Math.floor((height - fontSize) / (fontSize * 1.35)) + 1)
+  if (lines.length > maxLines && maxLines) {
+    lines = lines.slice(0, maxLines)
+    let last = lines[maxLines - 1]
+    while (last && ctx.measureText(last + '…').width > width) last = Array.from(last).slice(0, -1).join('')
+    lines[maxLines - 1] = last + '…'
+  }
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, width, height); ctx.clip()
+  lines.slice(0, maxLines).forEach((line, index) => ctx.fillText(line, x, y + fontSize + index * fontSize * 1.35))
   ctx.restore()
 }
 
 function drawYourCutPoster(canvas, model, images) {
   const ctx = canvas.getContext('2d')
-  const width = POSTER_WIDTH
-  const height = POSTER_HEIGHT
-  const themeColor = model.themeColor || '#E9C52C'
-  canvas.width = width
-  canvas.height = height
-
-  ctx.fillStyle = themeColor
-  ctx.fillRect(0, 0, width, height)
-  ctx.fillStyle = '#242522'
-  ctx.font = '900 128px sans-serif'
-  ctx.fillText('YOUR CUT.', 60, 156)
-  ctx.font = '900 44px sans-serif'
-  drawWrappedText(ctx, `${model.placeLabel} × ${model.vibeLabel}`, 64, 226, 952, 52)
-
-  const mosaicX = 60
-  const mosaicY = 330
-  ctx.fillStyle = '#3C473D'
-  ctx.fillRect(mosaicX, mosaicY, 960, 1116)
-
-  const scale = 960 / 670
-  const slots = [
-    [mosaicX, mosaicY, 390 * scale, 370 * scale, 0],
-    [mosaicX + 398 * scale, mosaicY + 42 * scale, 272 * scale, 286 * scale, 4],
-    [mosaicX + 268 * scale, mosaicY + 396 * scale, 366 * scale, 384 * scale, 0],
-    [mosaicX, mosaicY + 474 * scale, 226 * scale, 260 * scale, -6],
-    [mosaicX + 244 * scale, mosaicY + 302 * scale, 184 * scale, 172 * scale, -3]
-  ]
-  slots.forEach((slot, index) => drawYourCutPhoto(ctx, images[index], slot, index, themeColor))
-
-  ctx.fillStyle = '#242522'
-  ctx.font = '900 102px sans-serif'
-  ctx.fillText('THIS IS', 60, 1596)
-  ctx.fillText('HOW YOU SAW', 60, 1686)
-  const finalLine = 'MY SUMMER.'
-  const finalLineWidth = ctx.measureText(finalLine).width
-  ctx.fillStyle = '#242522'
-  ctx.fillRect(48, 1722, finalLineWidth + 36, 116)
-  ctx.fillStyle = '#ECEDE7'
-  ctx.fillText(finalLine, 60, 1812)
+  canvas.width = POSTER_WIDTH; canvas.height = POSTER_HEIGHT
+  ctx.fillStyle = '#ECEDE7'; ctx.fillRect(0, 0, POSTER_WIDTH, POSTER_HEIGHT)
+  ctx.fillStyle = '#242522'; ctx.font = '900 44px sans-serif'; ctx.fillText('SUMMER 2026', 60, 84)
+  ctx.font = '900 92px sans-serif'; ctx.fillText('RE-CUT BY YOU', 54, 184)
+  ctx.font = '700 28px sans-serif'; ctx.fillText('这是我的暑假。这是你重新看见它的方式。', 60, 242)
+  const originX = 60, originY = 300, width = 960, height = 963
+  ctx.fillStyle = '#3C473D'; ctx.fillRect(originX, originY, width, height)
+  model.elements.forEach((element, index) => {
+    const slot = element.slot
+    const x = originX + width * slot.x / 100, y = originY + height * slot.y / 100
+    const w = width * slot.w / 100, h = height * slot.h / 100
+    if (element.type === 'photo') drawYourCutPhoto(ctx, images[index], [x, y, w, h, slot.rotation], index, element.user)
+    else {
+      ctx.save(); ctx.translate(x + w / 2, y + h / 2); ctx.rotate(slot.rotation * Math.PI / 180)
+      ctx.fillStyle = '#242522'; ctx.fillRect(-w / 2, -h / 2, w, h)
+      ctx.fillStyle = '#E9C52C'; ctx.fillRect(-w / 2 + 12, -h / 2 + 12, w - 24, h - 24)
+      ctx.fillStyle = '#242522'; ctx.font = '900 19px sans-serif'
+      ctx.fillText(element.type === 'place' ? 'YOUR PLACE' : 'YOUR LINE', -w / 2 + 24, -h / 2 + 44)
+      drawFittedText(ctx, element.type === 'text' ? '“' + element.title + '”' : element.title, -w / 2 + 24, -h / 2 + 58, w - 48, h - 82, element.type === 'place' ? 60 : 40)
+      ctx.restore()
+    }
+  })
+  model.trace.forEach((item, index) => {
+    const y = 1310 + index * 94
+    ctx.fillStyle = '#465047'; ctx.font = '700 23px sans-serif'; ctx.fillText(item.label, 60, y)
+    ctx.fillStyle = '#242522'; drawFittedText(ctx, item.value, 250, y - 30, 760, 76, 34)
+  })
+  if (model.footnote) { ctx.fillStyle = '#465047'; drawFittedText(ctx, model.footnote, 60, 1700, 960, 66, 24) }
+  ctx.fillStyle = '#242522'; ctx.fillRect(0, 1790, POSTER_WIDTH, 130)
+  ctx.fillStyle = '#ECEDE7'; ctx.font = '700 28px sans-serif'; ctx.fillText('你用不同的方式，看完了我的暑假。', 60, 1840)
+  ctx.fillStyle = '#A8D900'; ctx.font = '900 28px sans-serif'; ctx.fillText('YOU SAW MY SUMMER DIFFERENTLY.', 60, 1890)
 }
 
 function exportCanvas(canvas) {
@@ -219,13 +238,23 @@ async function generateSummerPoster(canvas, model) {
 }
 
 async function generateYourCutPoster(canvas, model) {
-  if (!model || !Array.isArray(model.photos) || model.photos.length !== 5) {
-    throw new Error('Your Cut poster requires exactly five selected photos')
+  if (!model || model.photoIds.length !== 4 || new Set(model.photoIds).size !== 4 || model.elements.length !== (model.piece.type ? 5 : 4)) {
+    throw new Error('Your Cut requires four Summer photos and one user piece')
   }
-
-  const images = await Promise.all(model.photos.map((photo) => loadCanvasImage(canvas, photo.src)))
-  drawYourCutPoster(canvas, model, images)
-  return exportCanvas(canvas)
+  const images = await Promise.all(model.elements.map(async (element) => {
+    if (element.type !== 'photo') return null
+    try { return await loadCanvasImage(canvas, element.src) }
+    catch (error) { if (element.user) throw new Error('这张照片暂时无法使用，请重新选择。'); throw error }
+  }))
+  // A previous asynchronous export must finish before this canvas is redrawn.
+  const previous = cutExports.get(canvas) || Promise.resolve()
+  const pending = previous.catch(() => {}).then(() => {
+    drawYourCutPoster(canvas, model, images)
+    return exportCanvas(canvas)
+  })
+  cutExports.set(canvas, pending)
+  try { return await pending }
+  finally { if (cutExports.get(canvas) === pending) cutExports.delete(canvas) }
 }
 
 module.exports = { POSTER_WIDTH, POSTER_HEIGHT, getAspectFillCrop, generateSummerPoster, generateYourCutPoster }

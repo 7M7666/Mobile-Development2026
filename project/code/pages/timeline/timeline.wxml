@@ -1,8 +1,13 @@
-<scroll-view class="page-scroll" scroll-y enable-flex="true" show-scrollbar="false">
+<scroll-view class="page-scroll" scroll-y="{{!dragId}}" enable-flex="true" show-scrollbar="false">
 <view class="timeline-page">
   <view class="top-line"><text>SUMMER 2026</text><text>JOURNEY LOG</text></view>
   <view class="title rise"><text>WHERE</text><text>IT WENT.</text></view>
   <text class="journey-cn rise d1">按时间翻看每一站，让照片回到发生它的地方。</text>
+  <view class="journey-modes">
+    <view class="journey-mode {{journeyMode === 'my' ? 'mode-selected' : ''}}" data-mode="my" bindtap="selectMode"><text>我的路线</text><text>MY JOURNEY</text></view>
+    <view class="journey-mode {{journeyMode === 'your' ? 'mode-selected' : ''}}" data-mode="your" bindtap="selectMode"><text>你的路线</text><text>YOUR JOURNEY</text></view>
+  </view>
+  <block wx:if="{{journeyMode === 'my'}}">
   <view class="filter-row rise d1">
     <view
       wx:for="{{filters}}"
@@ -32,6 +37,38 @@
         <text class="card-arrow">→</text>
       </view>
       <view wx:if="{{item.tags.length}}" class="tag-row"><text wx:for="{{item.tags}}" wx:key="*this">#{{item}}</text></view>
+    </view>
+  </view>
+  </block>
+  <view wx:else class="your-journey">
+    <text class="route-question">01 / 如果这次旅行交给你，你愿意给它几天？</text>
+    <view class="route-options"><view wx:for="{{dayOptions}}" wx:key="*this" class="route-option {{route.days === item ? 'option-selected' : ''}}" data-days="{{item}}" bindtap="selectDays">{{item}} 天 <text>DAYS</text></view></view>
+    <text class="route-question">02 / 只能选两个，你最在意什么？</text>
+    <text class="route-help">最多两个，也可以暂时不选。</text>
+    <view class="route-options"><view wx:for="{{priorityOptions}}" wx:key="id" class="route-option {{item.selected ? 'option-selected' : ''}}" data-id="{{item.id}}" bindtap="selectPriority">{{item.label}}</view></view>
+    <text class="route-question">03 / 按你的心意，重新安排地点</text>
+    <text class="route-help">长按左侧“排序”并拖到目标卡片，松手换位。跳过的地点可随时保留回来，加入末尾。</text>
+    <view class="route-sort-list">
+      <view wx:for="{{activeStops}}" wx:key="id" class="route-sort-card {{pressedId === item.id ? 'route-pressed' : ''}} {{dragId === item.id ? 'route-dragging' : ''}} {{dragOverId === item.id && dragId !== item.id ? 'route-drop-target' : ''}}">
+        <view class="route-handle" data-id="{{item.id}}" bindtouchstart="touchRouteStart" bindlongpress="startRouteDrag" catchtouchmove="moveRouteDrag" bindtouchend="endRouteDrag" bindtouchcancel="cancelDrag"><text>≡</text><text>排序</text></view>
+        <image wx:if="{{item.cover}}" class="route-thumb" src="{{item.cover}}" mode="aspectFill"></image>
+        <view class="route-stop-name"><text>{{item.name}}</text><text>{{index + 1}} / 保留 KEEP</text></view>
+        <view class="route-skip" data-id="{{item.id}}" bindtap="toggleStop"><text>跳过</text><text>SKIP</text></view>
+      </view>
+    </view>
+    <text wx:if="{{!activeStops.length}}" class="route-error">你跳过了全部地点，请至少保留一个。</text>
+    <view wx:if="{{skippedStops.length}}" class="route-skipped"><text class="route-section-label">你跳过了</text><view wx:for="{{skippedStops}}" wx:key="id" class="skipped-stop"><text>{{item.name}}</text><view data-id="{{item.id}}" bindtap="toggleStop">保留 KEEP ＋</view></view></view>
+    <text class="route-help">分配规则：按排序每站先分 1 天；天数不足时取前几站；多出的天数全部留给第一站。优先项用于偏好评分，不擅自改变你的排序。这是一条心愿路线，未计算交通耗时。</text>
+    <text wx:if="{{routeError}}" class="route-error">{{routeError}}</text>
+    <view class="route-save" bindtap="generateRoute" hover-class="route-pressed">生成并保存路线 →</view>
+    <text wx:if="{{routeSaved}}" class="route-help">{{routeSaved}}</text>
+    <view wx:if="{{routeResult.length}}" class="route-output">
+      <text class="route-output-title">你的路线</text><text class="route-section-label">YOUR JOURNEY / {{route.days}} DAYS</text>
+      <view wx:for="{{routeResult}}" wx:key="day" class="route-day"><text>第 {{item.day}} 天 / DAY {{item.day}}</text><text>{{item.name}}</text></view>
+      <text wx:if="{{skippedNames}}" class="route-help">你跳过了：{{skippedNames}}</text>
+      <text wx:if="{{omittedNames}}" class="route-help">受天数限制，这次暂未安排：{{omittedNames}}。它们仍保留在排序中。</text>
+      <view class="route-compare"><text class="route-output-title">我的路线 VS 你的路线</text><text class="route-section-label">我的路线</text><text>南宁 → 桂平 → 乌鲁木齐 → 巴音布鲁克</text><text class="route-section-label">你的路线</text><text>{{routePath}}</text></view>
+      <text class="route-ending">同一个暑假，不同的走法。</text><text class="route-section-label">SAME SUMMER. DIFFERENT ROUTE.</text>
     </view>
   </view>
 </view>

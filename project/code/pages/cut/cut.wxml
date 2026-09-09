@@ -1,53 +1,73 @@
-<view class="cut theme-{{vibe}}" style="padding-top: {{top}}px; padding-bottom: {{bottom}}px;">
-  <scroll-view wx:if="{{mode == 'input'}}" class="cut-scroll" scroll-y="true" show-scrollbar="false">
-    <view class="cut-mark"><view class="back" bindtap="goBack"><text>← BACK</text></view><text>THE CUTTING ROOM</text></view>
-    <view class="cut-title"><text>YOUR</text><text>SUMMER CUT.</text></view>
-
-    <view class="cut-step"><text>01 / WHAT DO YOU KEEP?</text><text wx:if="{{selectionHint}}">PICK A PLACE FIRST.</text></view>
-    <view class="place-picker">
-      <view wx:for="{{places}}" wx:key="id" class="place-tile place-tile-{{index}} {{selectedPlace == item.id ? 'place-on' : ''}}" data-id="{{item.id}}" data-query="{{item.query}}" bindtap="pickPlace">
-        <image src="{{item.photo.src}}" mode="aspectFill"></image>
-        <view class="place-tile-copy"><text>{{item.number}}</text><text>{{item.name}}</text><text wx:if="{{selectedPlace == item.id}}">KEPT ●</text></view>
-      </view>
-    </view>
-
-    <view class="cut-step feel-step"><text>02 / NOW PICK THE FEEL.</text><text>{{vibeLabel}}</text></view>
-    <view class="vibe-grid">
-      <view wx:for="{{vibes}}" wx:key="id" class="vibe-tile vibe-{{item.id}} {{vibe == item.id ? 'vibe-on' : ''}}" data-vibe="{{item.id}}" bindtap="pickVibe">
-        <text>{{item.number}}</text><text>{{item.label}}</text><text>{{item.note}}</text>
-      </view>
-    </view>
-
-    <view class="make-cut" bindtap="makeCut"><text>MAKE THE CUT</text><text>→</text></view>
+<view class="cut {{step === 4 ? 'cut-final' : ''}}" style="padding-top: {{top}}px; padding-bottom: {{bottom}}px;">
+  <scroll-view class="cut-scroll" scroll-y="{{!dragId}}" show-scrollbar="false">
+    <view class="cut-mark"><view class="back" bindtap="goBack">← 返回</view><text>THE CUTTING ROOM / 2026</text></view>
+    <view wx:if="{{step !== 4}}" class="cut-title"><text>YOUR</text><text>SUMMER CUT.</text></view>
+    <view wx:if="{{step !== 4}}" class="steps"><view wx:for="{{steps}}" wx:key="*this" class="step {{step === index + 1 ? 'step-on' : ''}}" data-step="{{index + 1}}" bindtap="goStep"><text>0{{index + 1}}</text><text>{{item}}</text></view></view>
+    <text wx:if="{{notice}}" class="notice">{{notice}}</text>
+    <block wx:if="{{model}}">
+      <block wx:if="{{step === 1}}">
+        <text class="section-title">从我的暑假里，拿走几样东西</text><text class="caption">为你挑好的 4 个片段。留下喜欢的，换掉不合拍的。</text>
+        <text wx:if="{{model.sparse}}" class="caption">开始保留或替换前，推荐会跟随你的新选择更新。</text>
+        <view class="recommendations">
+          <view wx:for="{{model.photos}}" wx:key="id" class="recommendation recommendation-{{index}} {{item.kept ? 'recommendation-kept' : ''}}">
+            <image src="{{item.src}}" mode="aspectFill"></image>
+            <text class="selection-number">0{{index + 1}}</text>
+            <view class="selection-caption"><text class="photo-label">{{item.placeName}}</text><text class="photo-title">{{item.title}}</text></view>
+            <view class="selection-actions"><view class="{{item.kept ? 'selection-kept' : ''}}" data-id="{{item.id}}" catchtap="keepPhoto">{{item.kept ? '✓ 已保留' : '保留'}}</view><view data-id="{{item.id}}" catchtap="openReplace">替换 ↗</view></view>
+          </view>
+        </view>
+        <view class="primary" data-step="2" bindtap="goStep">留下你的一块夏天 →</view>
+      </block>
+      <block wx:elif="{{step === 2}}">
+        <text class="section-title">现在，留下一小块属于你的夏天</text>
+        <view class="piece-types">
+          <view class="{{editor === 'photo' || (!editor && model.piece.type === 'photo') ? 'piece-type-on' : ''}}" data-type="photo" bindtap="editPiece"><text>01</text><text>放一张照片</text><text>PHOTO</text></view>
+          <view class="{{editor === 'place' || (!editor && model.piece.type === 'place') ? 'piece-type-on' : ''}}" data-type="place" bindtap="editPiece"><text>02</text><text>留一个地点</text><text>PLACE</text></view>
+          <view class="{{editor === 'text' || (!editor && model.piece.type === 'text') ? 'piece-type-on' : ''}}" data-type="text" bindtap="editPiece"><text>03</text><text>写一句话</text><text>ONE LINE</text></view>
+        </view>
+        <text wx:if="{{busy}}" class="caption">正在准备你的照片…</text>
+        <view wx:if="{{editor}}" class="piece-editor">
+          <text>{{editor === 'place' ? '这个夏天，你想留下哪个地点？' : '用一句话，留下你的夏天。'}}</text>
+          <textarea value="{{draft}}" bindinput="inputPiece" maxlength="{{editor === 'place' ? 30 : 40}}" placeholder="{{editor === 'place' ? '例如：东京' : '例如：那个晚上，我一点也不想回家。'}}" auto-height="true"></textarea>
+          <view wx:if="{{editor === 'place' && model.pinPlace}}" class="text-action" bindtap="usePin">使用我在 MAP 留下的地点：{{model.pinPlace}}</view>
+          <view class="actions"><view bindtap="savePiece">保存这一块</view><view bindtap="cancelEdit">取消</view></view>
+        </view>
+        <view wx:if="{{model.piece.type}}" class="piece-preview">
+          <text class="photo-label">YOUR PIECE</text>
+          <image wx:if="{{model.piece.type === 'photo' && !pieceInvalid}}" src="{{model.piece.localFilePath}}" mode="aspectFill"></image>
+          <text wx:elif="{{pieceInvalid}}" class="caption">这张照片暂时无法使用，请重新选择。</text>
+          <text wx:else class="piece-words">{{model.piece.place || model.piece.text}}</text>
+          <text wx:if="{{model.piece.type === 'photo'}}" class="caption">按拼贴位置居中裁切 · 仅在本地使用</text>
+          <view class="actions"><view data-type="{{model.piece.type}}" bindtap="editPiece">{{model.piece.type === 'photo' ? '替换照片' : '编辑 / 替换'}}</view><view bindtap="removePiece">移除</view></view>
+        </view>
+        <view wx:if="{{canRestore && !model.piece.type}}" class="text-action" bindtap="restorePiece">恢复刚才的内容</view>
+        <view class="primary" data-step="3" bindtap="goStep">把这一版排出来 →</view>
+      </block>
+      <block wx:else>
+        <text wx:if="{{step === 3}}" class="section-title">{{step === 3 ? '把这一版重新排出来' : '生成你的版本'}}</text>
+        <text wx:if="{{step === 3}}" class="caption">{{step === 3 ? '长按任意片段，拖向另一个位置；松手完成排列。' : '这是我的暑假。这是你重新看见它的方式。'}}</text>
+        <image wx:if="{{step === 4 && posterPath}}" class="exported-poster" src="{{posterPath}}" mode="widthFix" bindtap="previewPoster"></image>
+        <view wx:else class="collage">
+          <view wx:for="{{model.elements}}" wx:key="id" class="collage-slot {{step === 3 ? 'arrange-slot' : ''}} {{dragId === item.id ? 'dragging' : ''}} {{dragOverId === item.id ? 'drop-target' : ''}}" style="{{item.style}}" data-id="{{item.id}}" bindtouchstart="touchSlotStart" bindlongpress="startSlotDrag" bindtouchmove="moveSlotDrag" bindtouchend="endSlotDrag" bindtouchcancel="cancelDrag">
+            <image wx:if="{{item.type === 'photo'}}" src="{{item.src}}" mode="aspectFill"></image>
+            <view wx:else class="collage-text"><text>{{item.type === 'place' ? 'YOUR PLACE' : 'YOUR LINE'}}</text><text style="font-size: {{item.textSize}}rpx;">{{item.type === 'text' ? '“' + item.title + '”' : item.title}}</text></view>
+            <text class="slot-label">0{{index + 1}} / {{item.slot.label}}{{item.user ? ' · YOU' : ''}}</text>
+          </view>
+        </view>
+        <view wx:if="{{step === 3}}" class="arrange-tools"><view wx:for="{{model.elements}}" wx:key="id" class="arrange-row"><text>{{item.slot.label}} · {{item.title}}</text><view wx:if="{{!item.user}}" data-id="{{item.id}}" bindtap="openReplace">替换</view><block wx:else><view data-type="{{item.type}}" bindtap="editPiece">替换</view><view bindtap="removePiece">移除</view></block></view></view>
+        <view wx:if="{{step === 3 && editor}}" class="piece-editor"><text>修改你的内容</text><textarea value="{{draft}}" bindinput="inputPiece" maxlength="{{editor === 'place' ? 30 : 40}}" auto-height="true"></textarea><view class="actions"><view bindtap="savePiece">保存</view><view bindtap="cancelEdit">取消</view></view></view>
+        <view wx:if="{{step === 3}}" class="primary" data-step="4" bindtap="goStep">生成你的版本 →</view>
+        <block wx:else>
+          <text class="poster-heading">这是你重新看见的<br/>Summer 2026。</text>
+          <view class="final-trace"><view class="trace-row" wx:for="{{model.trace}}" wx:key="label"><text>{{item.label}}</text><text>{{item.value}}</text></view></view>
+          <text wx:if="{{model.footnote}}" class="caption">{{model.footnote}}</text>
+          <view class="primary final-save" bindtap="savePoster">{{posterStatus === 'saving' ? '正在保存…' : (posterStatus === 'saved' ? '已保存 · 再存一张' : '保存你的版本')}}</view>
+          <view class="final-edit-actions"><view bindtap="previewPoster">{{posterStatus === 'generating' ? '正在生成…' : '预览完整海报'}} ↗</view><view data-step="3" bindtap="goStep">重新调整 ↗</view></view>
+        </block>
+      </block>
+      <view class="footer"><view bindtap="resetCut">重新做一版</view><view bindtap="openWrapped">回看 Wrapped</view></view>
+    </block>
   </scroll-view>
-
-  <scroll-view wx:else class="cut-scroll result" scroll-y="true" show-scrollbar="false">
-    <view class="cut-mark"><view class="back" bindtap="makeAnother"><text>← EDIT AGAIN</text></view><text>THE CUTTING ROOM</text></view>
-    <view wx:if="{{empty}}" class="empty-state"><text>NOTHING</text><text>MADE THE CUT.</text><view class="make-cut" bindtap="makeAnother"><text>TRY ANOTHER PLACE</text><text>→</text></view></view>
-    <view wx:else class="result-body">
-      <view class="result-title"><text>YOUR CUT.</text><text>{{resultPhotos.length}} PHOTOS</text><text>{{placeLabel}} × {{vibeLabel}}</text></view>
-      <view class="cut-mosaic">
-        <view wx:for="{{resultPhotos}}" wx:key="id" class="cut-photo cut-photo-{{index}}" bindtap="previewPhoto" data-src="{{item.src}}"><image src="{{item.src}}" mode="aspectFill"></image><text>{{item.rank}}</text></view>
-      </view>
-       <view class="result-copy"><text>THIS IS</text><text>HOW YOU SAW</text><text>MY SUMMER.</text></view>
-       <text class="result-summary">{{cut.copy.summary}}</text>
-       <view class="why-cut" bindtap="toggleWhy" aria-role="button" aria-label="Explain selected photos">
-         <view><text>WHY THESE PHOTOS?</text><text>{{showWhy ? '↑' : '↓'}}</text></view>
-         <view wx:if="{{showWhy}}" class="why-list">
-           <view wx:for="{{resultPhotos}}" wx:key="id" class="why-photo">
-             <text>{{item.rank}} / {{item.title}}</text>
-             <text>TOTAL SCORE {{item.score}}</text>
-             <view><text wx:if="{{item.scoreBreakdown.placeMatch}}">PLACE +{{item.scoreBreakdown.placeMatch}}</text><text wx:if="{{item.scoreBreakdown.vibeMatch}}">VIBE +{{item.scoreBreakdown.vibeMatch}}</text><text>PRIORITY +{{item.scoreBreakdown.priority}}</text></view>
-           </view>
-         </view>
-       </view>
-       <view wx:if="{{!empty && resultPhotoIds.length}}" class="poster-cut-controls">
-         <view class="poster-cut-explainer"><text>POSTER PREVIEW</text><text>A GENERATED POSTER BASED ON THIS CUT.</text><text>USES ALL 5 SELECTED PHOTOS FROM YOUR CUT.</text></view>
-         <view class="return-actions poster-ready-actions"><view catchtap="previewPoster" aria-role="button"><text>{{posterStatus == 'generating' ? 'GENERATING...' : 'PREVIEW POSTER'}}</text></view><view catchtap="savePoster" aria-role="button"><text>{{posterStatus == 'saving' ? 'SAVING...' : 'SAVE CUT POSTER'}}</text></view></view>
-       </view>
-     </view>
-    <view class="make-cut make-another" bindtap="makeAnother"><text>MAKE ANOTHER CUT</text><text>→</text></view>
-    <view class="return-actions"><view bindtap="goBack"><text>BACK TO ARCHIVE</text></view><view bindtap="openWrapped"><text>PLAY WRAPPED</text></view><view bindtap="resetCut"><text>RESET CUT</text></view></view>
-  </scroll-view>
+  <view wx:if="{{replacing}}" class="candidate-sheet"><view class="sheet-head"><text>换一个同地点的片段</text><view bindtap="closeReplace">关闭 ×</view></view><scroll-view scroll-y="true" class="candidate-scroll"><view wx:for="{{candidates}}" wx:key="id" class="candidate" data-id="{{item.id}}" bindtap="replacePhoto"><image src="{{item.src}}" mode="aspectFill"></image><text>{{item.title}}</text></view><text wx:if="{{!candidates.length}}">这个地点的片段都已在你的版本中。</text></scroll-view></view>
   <canvas id="cut-poster-canvas" type="2d" class="cut-poster-canvas" width="1080" height="1920"></canvas>
 </view>

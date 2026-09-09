@@ -1,0 +1,25 @@
+<block wx:if="{{user}}">
+  <view class="cover"><image wx:if="{{user.coverUrl}}" src="{{user.coverUrl}}" mode="aspectFill" /><view wx:else class="cover-art"><view class="cover-line"></view></view></view>
+  <view class="screen"><view class="profile-info"><image class="profile-avatar" src="{{user.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" /><view class="profile-actions"><button wx:if="{{isSelf}}" class="secondary" bindtap="editProfile">编辑资料</button><button wx:else class="{{isFollowed ? 'secondary' : 'primary'}}" bindtap="follow" loading="{{following}}" disabled="{{following}}">{{isFollowed ? '已关注' : '关注'}}</button></view><view class="title">{{user.nickName}}</view><view class="subtitle">{{user.bio || '还没有填写个人简介'}}</view></view>
+  <view class="stats"><view><text>{{user.postCount}}</text>发布</view><view><text>{{user.followerCount}}</text>粉丝</view><view><text>{{user.followingCount}}</text>关注</view></view>
+  <view class="tabs"><text class="{{tab === 'posts' ? 'active' : ''}}" data-tab="posts" bindtap="changeTab">发布</text><text class="{{tab === 'likes' ? 'active' : ''}}" data-tab="likes" bindtap="changeTab">喜欢</text></view>
+  <view class="archive-grid"><view wx:for="{{posts}}" wx:key="_id" class="tile" data-id="{{item._id}}" bindtap="openPost"><image src="{{item.images[0]}}" mode="aspectFill" lazy-load /><text class="photo-count">{{item.images.length}} 张</text></view></view>
+  <view wx:if="{{!posts.length && !loading && !error}}" class="state">{{tab === 'likes' ? '还没有喜欢的照片' : '还没有发布照片'}}</view>
+  </view>
+</block>
+<view wx:if="{{error}}" class="screen state error">{{error}}<button class="secondary" bindtap="retry">重新加载</button></view><view wx:if="{{loading}}" class="state">正在加载…</view>
+
+
+<view wx:if="{{editing}}" class="editor-overlay">
+  <form class="editor-form" bindsubmit="saveProfile"><view class="editor-panel">
+    <view class="editor-header"><view><view class="editor-title">编辑资料</view><view class="editor-subtitle">让同学更好地认识你</view></view><button size="mini" class="close-editor" bindtap="closeEditor" disabled="{{saving || uploading}}" aria-label="关闭">×</button></view>
+    <scroll-view scroll-y class="editor-content"><view class="editor-padding">
+      <view class="edit-cover"><image wx:if="{{draft.coverUrl}}" src="{{draft.coverUrl}}" mode="aspectFill" /><view wx:else class="cover-placeholder"></view><button size="mini" class="change-cover" bindtap="chooseCover" disabled="{{uploading || saving}}">更换封面</button></view>
+      <view class="edit-avatar-row"><image class="edit-avatar" src="{{draft.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" /><view class="avatar-label"><view>个人头像</view><text>选择一张喜欢的照片</text></view><button size="mini" class="change-avatar" open-type="chooseAvatar" bindchooseavatar="chooseAvatar" disabled="{{uploading || saving}}">更换</button></view>
+      <view class="form-label">昵称 <text>最多30字</text></view><input class="edit-field" name="nickName" type="nickname" value="{{draft.nickName}}" maxlength="30" data-field="nickName" bindinput="editInput" bindblur="editInput" disabled="{{saving}}" />
+      <view class="form-label">个人简介 <text>{{draft.bio.length}} / 160</text></view><textarea class="edit-field edit-bio" name="bio" value="{{draft.bio}}" maxlength="160" placeholder="介绍一下自己，或写下你喜欢的校园角落" data-field="bio" bindinput="editInput" disabled="{{saving}}" />
+      <view wx:if="{{uploading}}" class="edit-status">正在上传图片…</view><view wx:if="{{editError}}" class="error edit-status">{{editError}}</view>
+    </view></scroll-view>
+    <view class="editor-footer"><button class="primary" form-type="submit" loading="{{saving}}" disabled="{{saving || uploading}}">保存资料</button></view>
+  </view></form>
+</view>

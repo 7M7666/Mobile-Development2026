@@ -1,0 +1,7 @@
+.read-button { background: transparent; color: #0965F3; margin: 0; padding: 0; font-size: 23rpx; }
+.notice { display: flex; gap: 20rpx; padding: 30rpx 0; border-bottom: 1rpx solid #EDF0F4; }
+.notice-body { flex: 1; min-width: 0; font-size: 25rpx; }
+.notice-name { font-size: 29rpx; font-weight: 800; }
+.notice-content { background: #F5F7FA; border-radius: 10rpx; padding: 16rpx; margin: 12rpx 0; word-break: break-all; white-space: pre-wrap; }
+.unread-label { color: #0965F3; font-size: 20rpx; padding-left: 12rpx; }
+.notice .small { margin-top: 9rpx; }

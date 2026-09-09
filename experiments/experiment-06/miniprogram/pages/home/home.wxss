@@ -1,0 +1,6 @@
+.home-heading { display: flex; justify-content: space-between; align-items: center; padding: 6rpx 0 18rpx; }
+.home-heading .title { margin: 0; font-size: 76rpx; letter-spacing: -3rpx; }
+.heading-link { font-size: 25rpx; font-weight: 700; color: #101114; }
+.badge { color: #0965F3; margin-left: 6rpx; }
+.empty-frame { width: 118rpx; height: 98rpx; border: 3rpx solid #B8D4FC; border-radius: 16rpx; margin: 8rpx auto 32rpx; transform: rotate(-8deg); background: #F3F8FF; padding: 26rpx; }
+.empty-frame view { width: 55rpx; height: 32rpx; border-left: 3rpx solid #0965F3; border-top: 3rpx solid #0965F3; transform: rotate(35deg); margin-top: 12rpx; }

@@ -1,0 +1,5 @@
+<view class="screen">
+  <view class="title">消息</view><view class="row between"><text class="subtitle">{{unreadCount ? unreadCount + ' 条未读消息' : '你的校园互动都在这里'}}</text><button wx:if="{{notifications.length}}" class="read-button" bindtap="markVisible" disabled="{{marking}}">本页已读</button></view>
+  <view wx:for="{{notifications}}" wx:key="_id" class="notice {{item.isRead ? '' : 'unread'}}" data-id="{{item._id}}" bindtap="openNotification"><image class="avatar" src="{{item.sender.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill"/><view class="notice-body"><view class="notice-name">{{item.sender.nickName}} <text wx:if="{{!item.isRead}}" class="unread-label">未读</text></view><view>{{item.actionText}}</view><view wx:if="{{item.content}}" class="notice-content">{{item.content}}</view><view class="small">{{item.timeText}}</view></view></view>
+  <view wx:if="{{error}}" class="state error">{{error}}<button class="secondary" bindtap="retry">重新加载</button></view><view wx:elif="{{!notifications.length && !loading}}" class="state">有人点赞、评论或关注你时，会在这里通知你。</view><view wx:if="{{loading}}" class="state">正在加载…</view>
+</view>

@@ -1,0 +1,5 @@
+<view class="dock"><view class="dock-inner">
+  <view wx:for="{{tabs}}" wx:key="path" class="tab {{selected === index ? 'selected' : ''}}" data-index="{{index}}" bindtap="select" role="button" aria-label="{{item.label}}">
+    <view class="icon {{item.icon}}"><view class="icon-inner"></view></view><text>{{item.label}}</text>
+  </view>
+</view></view>

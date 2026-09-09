@@ -1,0 +1,10 @@
+<view class="screen">
+  <view class="home-heading"><view class="title">海大一刻</view><view class="heading-link" bindtap="notifications">消息 <text wx:if="{{unreadCount}}" class="badge">{{unreadCount > 99 ? '99+' : unreadCount}}</text></view></view>
+  <view class="tabs"><text class="{{mode === 'forYou' ? 'active' : ''}}" data-mode="forYou" bindtap="changeMode">最新</text><text class="{{mode === 'following' ? 'active' : ''}}" data-mode="following" bindtap="changeMode">关注</text></view>
+  <post-card wx:for="{{posts}}" wx:key="_id" post="{{item}}" bind:likechange="onLikeChange" />
+  <view wx:if="{{skippedCount}}" class="state small">有 {{skippedCount}} 条动态缺少完整照片数据，暂未显示。<button wx:if="{{hasMore && !loading}}" class="secondary" bindtap="onReachBottom">继续加载</button></view>
+  <view wx:if="{{error}}" class="state"><view class="state-title">暂时无法加载</view><view class="error">{{error}}</view><button class="secondary" bindtap="retry">重新连接</button></view>
+  <view wx:elif="{{!loading && !posts.length && !skippedCount}}" class="state"><view class="empty-frame"><view></view></view><view class="state-title">{{mode === 'following' ? '关注的人会出现在这里' : '把第一张照片留在这里'}}</view><view>{{mode === 'following' ? '在最新动态中点开头像，关注喜欢的同学。' : '记录你的校园生活。'}}</view><button wx:if="{{mode === 'forYou'}}" class="primary" bindtap="publish">发布照片</button></view>
+  <view wx:if="{{loading}}" class="state">正在加载…</view>
+  <view wx:elif="{{posts.length && !hasMore}}" class="state small">已经看完啦</view>
+</view>

@@ -1,0 +1,15 @@
+<view class="screen">
+  <view class="title">发布照片</view>
+  <textarea class="caption-input" placeholder="分享今天的校园生活…" maxlength="1000" value="{{caption}}" data-field="caption" bindinput="onInput" disabled="{{publishing || submitted}}" />
+  <view class="row between small"><text>照片</text><text>{{images.length}} / 9</text></view>
+  <view class="selected-photos">
+    <view wx:for="{{images}}" wx:key="path" class="photo-wrap"><image src="{{item.path}}" mode="aspectFill" data-index="{{index}}" bindtap="previewImage" /><button wx:if="{{!publishing && !submitted}}" class="remove" data-index="{{index}}" catchtap="deleteImage" aria-label="删除第{{index + 1}}张照片">×</button></view>
+    <button wx:if="{{images.length < 9}}" class="add-photo" bindtap="chooseImage" disabled="{{publishing || submitted}}"><view class="plus">+</view><view>拍照 / 相册</view></button>
+  </view>
+  <view class="section-title">地点</view><input class="field" maxlength="60" placeholder="为这一刻写下地点" value="{{locationName}}" data-field="locationName" bindinput="onInput" disabled="{{publishing || submitted}}" />
+  <view class="section-title">标签</view><view class="row"><input class="field tag-input" placeholder="海大、海边、日常…" maxlength="20" value="{{tagInput}}" data-field="tagInput" bindinput="onInput" bindconfirm="addTag" disabled="{{publishing || submitted}}" /><button class="secondary tag-add" bindtap="addTag" disabled="{{publishing || submitted}}">添加</button></view>
+  <view><text wx:for="{{tags}}" wx:key="*this" class="tag" data-index="{{index}}" bindtap="deleteTag">#{{item}} ×</text></view>
+  <view wx:if="{{publishing}}" class="progress"><progress percent="{{progress}}" stroke-width="3" activeColor="#0965F3" /><view class="small">{{progress < 95 ? '正在上传照片' : '正在保存动态'}} {{progress}}%</view></view>
+  <view wx:if="{{error}}" class="error publish-error">{{error}}</view>
+  <button class="primary post-button" bindtap="publish" loading="{{publishing}}" disabled="{{publishing || !images.length}}">{{submitted ? '重试确认发布' : '发布照片'}}</button>
+</view>

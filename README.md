@@ -2,7 +2,7 @@
 
 中国海洋大学《移动软件开发》课程学习与实验仓库，记录微信小程序、HarmonyOS 应用实验和个人项目代码。
 
-截至 2026-09-07：实验 1–5 已完成，均包含源码与实验报告；个人项目 **Summer 2026** 已实现主要页面与交互，并完成真机演示视频。
+截至 2026-09-09：仓库已收录实验 1–6 的源码与实验报告，涵盖微信小程序基础、新闻展示、小游戏、HarmonyOS 计算器和云开发照片社区；个人项目 **Summer 2026** 已加入访客互动、路线编排与个性化拼贴。
 
 ## 课程信息
 
@@ -19,17 +19,14 @@ experiments/                 课程实验
 ├─ experiment-02/            实验 2：个人名片
 ├─ experiment-03/            实验 3：高校新闻网（源码在 project/）
 ├─ experiment-04/            实验 4：MEOW PUSH 推箱子（源码在 project/）
-└─ experiment-05/            实验 5：HarmonyOS 多功能计算器
-   ├─ entry/src/main/        ArkTS / ArkUI 源码与资源
-   ├─ tests/                核心逻辑验证脚本
-   └─ report.md / .pdf       实验报告
+├─ experiment-05/            实验 5：HarmonyOS 多功能计算器
+└─ experiment-06/            实验 6：海大一刻校园照片社区
 
 project/                     个人项目 Summer 2026
 ├─ code/                     微信小程序源码、照片与音频素材
 ├─ materials/                原始项目素材
-├─ demo.mp4                  原始真机录屏
-├─ summer2026_demo.mp4        剪辑后的演示视频
-└─ demo_edit_plan.md          演示视频剪辑方案
+├─ tests/                    交互与回归测试
+└─ summer2026_demo.mp4        剪辑后的演示视频
 ```
 
 ## 实验进度
@@ -41,8 +38,7 @@ project/                     个人项目 Summer 2026
 | 实验 3 | 高校新闻网（OUC NEWS） | [project](experiments/experiment-03/project/) | [Markdown](experiments/experiment-03/Lab3_高校新闻网_实验报告.md) / [PDF](experiments/experiment-03/Lab3_高校新闻网_实验报告.pdf) | 已完成 |
 | 实验 4 | MEOW PUSH 像素推饭碗 | [project](experiments/experiment-04/project/) | [Markdown](experiments/experiment-04/report.md) / [PDF](experiments/experiment-04/report.pdf) | 已完成 |
 | 实验 5 | HarmonyOS 多功能计算器 | [experiment-05](experiments/experiment-05/) | [Markdown](experiments/experiment-05/report.md) / [PDF](experiments/experiment-05/report.pdf) | 已完成 |
-
-实验四包含关卡选择、逐关解锁、撤销、重置、计步计时与本地进度保存。实验五包含基础计算、科学计算、自定义函数绘图、历史记录及主题设置，并提供计算与表达式采样测试。实验五当前的历史记录仅在运行期间保留，函数图像范围固定，详细限制见实验报告。
+| 实验 6 | 海大一刻校园照片社区 | [experiment-06](experiments/experiment-06/) | [Markdown](experiments/experiment-06/report.md) / [PDF](experiments/experiment-06/report.pdf) | 已实现并附运行记录，部分问题待完善 |
 
 ## 个人项目：Summer 2026
 
@@ -50,24 +46,31 @@ project/                     个人项目 Summer 2026
 
 | 模块 | 功能 |
 | --- | --- |
-| Home | 夏日总览、旅行地图与地点入口 |
-| Journey | 行程卡片与地点详情导航 |
-| Detail | 地点介绍、照片墙与照片预览 |
-| Summer Wrapped | 多页交互回顾、旅行与音乐内容、回顾海报 |
-| Your Cut | 按地点和氛围选择照片、展示选择理由、生成拼贴海报并保存 |
-| Archive | 归档总览、地点与回忆入口 |
+| Home | 夏日总览、旅行地图、访客地点与氛围记录 |
+| Journey | 行程卡片、旅行天数与偏好选择、地点排序及跳过、路线保存与对照 |
+| Detail | 地点介绍、照片墙、照片预览与情境选择 |
+| Summer Wrapped | 多页交互回顾、旅行与音乐选择、个人片段与回顾海报 |
+| Your Cut | 根据互动选择照片、调整拼贴内容与顺序、生成海报并保存 |
+| Archive | 作者与访客双视角归档、路线与选择记录、继续互动入口 |
 
-项目已加入统一数据与资源管理、自定义导航，以及回顾进度、照片选择和声音开关的本地状态保存。
+项目使用统一数据与资源管理、自定义导航，并在本地保存回顾进度、访客偏好、路线、情境选择、照片选择和声音设置。交互与海报逻辑的验证脚本位于 `project/tests/`。
 
 - [小程序源码](project/code/)
-- [演示视频](project/summer2026_demo.mp4) / [原始录屏](project/demo.mp4)
-- [演示视频剪辑方案](project/demo_edit_plan.md)
 
 ## 使用说明
 
 ### 微信小程序
 
-使用微信开发者工具导入实验 1、2 的目录，或实验 3、4 下的 `project/` 目录。个人项目导入根目录下的 `project/`，其配置已将 `miniprogramRoot` 指向 `code/`。按自己的开发者权限配置 AppID，再编译、预览或真机调试；个人项目使用支持 Skyline 的基础库。
+使用微信开发者工具导入实验 1、2 的目录，或实验 3、4 下的 `project/` 目录。实验 6 导入 `experiments/experiment-06/`，源码入口为 `miniprogram/`，云函数位于 `cloudfunctions/`；使用自己的云环境，按[部署说明](experiments/experiment-06/README.md)配置集合、索引并部署云函数。最新运行记录见实验报告。
+
+个人项目导入根目录下的 `project/`，其配置已将 `miniprogramRoot` 指向 `code/`。按自己的开发者权限配置 AppID，再编译、预览或真机调试；个人项目使用支持 Skyline 的基础库。
+
+在仓库根目录运行个人项目与实验六的本地测试：
+
+```sh
+node --test project/tests/*.cjs
+node --test experiments/experiment-06/tests/stage1.test.js
+```
 
 ### HarmonyOS 计算器
 

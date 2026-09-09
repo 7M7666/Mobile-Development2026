@@ -5,3 +5,34 @@ page { background: #ECEDE7; }
 .stop-ledger { margin-top: 34rpx; border-top: 4rpx solid #242522; }.stop-row { min-height: 116rpx; border-bottom: 2rpx solid #242522; }.stop-row > text:first-child { color: #FF5944; font-size: 24rpx; font-weight: 900; }.stop-row view { display: flex; flex: 1; flex-direction: column; margin-left: 24rpx; }.stop-row view text:first-child { font-size: 32rpx; font-weight: 900; line-height: .85; letter-spacing: -1.5rpx; }.stop-row view text:last-child { margin-top: 7rpx; color: #3C473D; font-size: 17rpx; font-weight: 800; letter-spacing: 1rpx; }.stop-row > text:last-child { font-size: 17rpx; font-weight: 900; letter-spacing: 1rpx; }.journey-entry { min-height: 94rpx; margin-top: 42rpx; padding: 0 20rpx; color: #ECEDE7; background: #242522; font-size: 20rpx; font-weight: 900; letter-spacing: .8rpx; }.journey-entry text:last-child { color: #A8D900; font-size: 42rpx; }
 page { height: 100vh; overflow: hidden; }.page-scroll { display: block; width: 100%; height: 100%; box-sizing: border-box; }
  .home-cn { display: block; margin-top: 28rpx; color: #3C473D; font-size: 19rpx; font-weight: 700; line-height: 1.25; }.home .map-frame { margin-top: 28rpx; }
+.pin-entry { margin-top: 24rpx; padding: 26rpx 22rpx; border: 3rpx solid #242522; background: #A8D900; }
+.pin-entry text, .pin-place, .pin-vibe, .pin-note, .pin-caption, .pin-question { display: block; }
+.pin-entry text:first-child { font-size: 32rpx; font-weight: 900; }
+.pin-entry text:last-child { margin-top: 8rpx; font-size: 18rpx; font-weight: 800; letter-spacing: 2rpx; }
+.visitor-pin { margin-top: 24rpx; padding: 26rpx; border: 3rpx solid #242522; }
+.pin-heading, .match-link { display: flex; justify-content: space-between; align-items: center; gap: 16rpx; font-size: 25rpx; font-weight: 900; }
+.pin-heading > text:last-child { font-size: 18rpx; }
+.pin-place { margin-top: 24rpx; font-size: 48rpx; font-weight: 900; word-break: break-all; }
+.pin-vibe { margin-top: 14rpx; font-size: 21rpx; font-weight: 800; }
+.pin-note { margin-top: 20rpx; font-size: 28rpx; line-height: 1.6; word-break: break-all; }
+.pin-caption { margin-top: 14rpx; color: #3C473D; font-size: 23rpx; line-height: 1.6; }
+.pin-edit { padding: 24rpx 0 12rpx; font-size: 25rpx; font-weight: 800; }
+.pin-match { margin-top: 22rpx; padding-top: 24rpx; border-top: 2rpx solid #242522; font-size: 24rpx; }
+.match-link { padding: 22rpx 0 8rpx; }
+.match-link text:first-child { font-size: 36rpx; }
+.match-link text:last-child { font-size: 22rpx; }
+.pin-overlay { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 100; color: #242522; }
+.pin-scrim { position: absolute; top: 0; right: 0; bottom: 0; left: 0; background: rgba(36,37,34,.55); }
+.pin-sheet { position: absolute; right: 0; bottom: 0; left: 0; padding: 28rpx 28rpx calc(env(safe-area-inset-bottom) + 24rpx); background: #ECEDE7; border-top: 8rpx solid #A8D900; }
+.pin-close { padding: 16rpx 0 16rpx 16rpx; font-size: 24rpx; flex-shrink: 0; }
+.pin-fields { height: 62vh; display: block; }
+.pin-question { margin-top: 28rpx; font-size: 27rpx; font-weight: 800; line-height: 1.5; }
+.pin-input { min-height: 82rpx; margin-top: 16rpx; padding: 0 16rpx; border: 2rpx solid #242522; font-size: 27rpx; }
+.vibe-options { display: flex; flex-wrap: wrap; gap: 12rpx; margin-top: 18rpx; }
+.vibe-option { width: 30%; box-sizing: border-box; padding: 18rpx 10rpx; border: 2rpx solid #242522; text-align: center; }
+.vibe-option text { display: block; font-size: 25rpx; font-weight: 800; }
+.vibe-option text:last-child { margin-top: 6rpx; font-size: 17rpx; }
+.vibe-selected { color: #A8D900; background: #242522; }
+.pin-save { margin-top: 28rpx; padding: 26rpx; background: #242522; color: #ECEDE7; font-size: 29rpx; font-weight: 900; }
+.pin-error { display: block; margin-top: 16rpx; color: #A32D1F; font-size: 24rpx; }
+.pin-pressed { opacity: .65; }

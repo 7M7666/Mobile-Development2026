@@ -1,0 +1,12 @@
+.waterfall { display: flex; gap: 20rpx; align-items: flex-start; }
+.column { flex: 1; min-width: 0; }
+.image-card { margin-bottom: 30rpx; }
+.image-wrap { position: relative; overflow: hidden; border-radius: 18rpx; background: #F2F5FA; min-height: 160rpx; }
+.image { width: 100%; display: block; }
+.photo-count { position: absolute; right: 10rpx; bottom: 10rpx; font-size: 20rpx; padding: 2rpx 10rpx; color: #fff; background: rgba(10,20,35,.45); border-radius: 7rpx; }
+.caption { font-size: 27rpx; color: #101114; font-weight: 700; line-height: 1.55; margin: 14rpx 0 12rpx; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; word-break: break-all; }
+.card-footer { display: flex; align-items: center; justify-content: space-between; gap: 10rpx; margin-top: 12rpx; }
+.user-info { display: flex; align-items: center; min-width: 0; color: #777F8D; font-size: 21rpx; }
+.user-info text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.avatar { width: 34rpx; height: 34rpx; border-radius: 50%; margin-right: 8rpx; flex-shrink: 0; }
+.likes { color: #777F8D; font-size: 22rpx; flex-shrink: 0; }

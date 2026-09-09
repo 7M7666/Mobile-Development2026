@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "动态详情",
+  "usingComponents": {
+    "post-card": "/components/post-card/post-card"
+  }
+}

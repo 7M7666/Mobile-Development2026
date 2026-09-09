@@ -15,10 +15,10 @@ Component({
 
   data: {
     items: [
-      { key: 'map', label: 'MAP', mark: '●' },
-      { key: 'journey', label: 'JOURNEY', mark: '↗' },
-      { key: 'wrapped', label: 'WRAPPED', mark: '▶' },
-      { key: 'me', label: 'ME', mark: '★' }
+      { key: 'map', label: 'MAP', chinese: '地图', mark: '●' },
+      { key: 'journey', label: 'JOURNEY', chinese: '旅程', mark: '↗' },
+      { key: 'wrapped', label: 'WRAPPED', chinese: '回顾', mark: '▶' },
+      { key: 'me', label: 'ARCHIVE', chinese: '档案', mark: '★' }
     ]
   },
 
@@ -36,7 +36,15 @@ Component({
         return
       }
 
-      wx.redirectTo({ url })
+      const pages = getCurrentPages()
+      const targetIndex = pages.findIndex((page) => `/${page.route}` === url)
+      if (targetIndex >= 0 && targetIndex < pages.length - 1) {
+        wx.navigateBack({ delta: pages.length - 1 - targetIndex })
+      } else if (pages.length > 1) {
+        wx.reLaunch({ url })
+      } else {
+        wx.redirectTo({ url })
+      }
     }
   }
 })

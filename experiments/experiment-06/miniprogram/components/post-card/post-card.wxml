@@ -1,0 +1,18 @@
+<view wx:if="{{post._id && post.images.length}}" class="post" bindtap="openPost">
+  <view class="author" catchtap="openProfile" role="button" aria-label="查看作者主页">
+    <image class="avatar" src="{{post.author.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" />
+    <view class="author-info"><view class="name">{{post.author.nickName}}</view><view class="meta">{{post.location.name}}  {{post.timeText}}</view></view>
+    <text class="arrow">↗</text>
+  </view>
+  <view wx:if="{{post.caption}}" class="caption">{{post.caption}}</view>
+  <view class="photos count-{{post.images.length}}">
+    <image wx:for="{{post.images}}" wx:key="*this" class="photo" src="{{item}}" mode="aspectFill" lazy-load data-index="{{index}}" catchtap="preview" aria-label="预览第{{index + 1}}张照片" />
+  </view>
+  <view class="tags"><text wx:for="{{post.tags}}" wx:key="*this" class="tag" data-tag="{{item}}" catchtap="openTag">#{{item}}</text></view>
+  <view class="foot">
+    <button size="mini" class="social {{post.isLiked ? 'liked' : ''}}" catchtap="like" disabled="{{liking}}" aria-label="{{post.isLiked ? '取消点赞' : '点赞'}}"><text class="heart">{{post.isLiked ? '♥' : '♡'}}</text> {{post.likeCount || 0}}</button>
+    <button size="mini" class="social" catchtap="comment"><view class="bubble"></view> {{post.commentCount || 0}}</button>
+    <text class="photo-total">{{post.images.length}} 张照片</text>
+  </view>
+  <view wx:if="{{likeError}}" class="like-error">{{likeError}} 请再次点击点赞按钮重试。</view>
+</view>

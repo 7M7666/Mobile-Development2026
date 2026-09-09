@@ -1,11 +1,27 @@
-<scroll-view class="page-scroll" scroll-y enable-flex="true" show-scrollbar="false">
+<scroll-view class="page-scroll" scroll-y="{{!pinSheetOpen}}" enable-flex="true" show-scrollbar="false">
 <view class="home">
   <view class="home-head"><text>SUMMER 2026</text><text>MAP / 04 STOPS</text></view>
   <view class="home-title"><text>WHERE</text><text>IT WENT.</text></view>
   <text class="home-cn">四个停靠点串起了从广西到新疆的这段夏天。</text>
   <view class="map-frame">
-    <map class="summer-map" latitude="{{mapCenter.latitude}}" longitude="{{mapCenter.longitude}}" scale="{{mapScale}}" markers="{{markers}}" polyline="{{polyline}}" bindmarkertap="openMarker" show-location="false" enable-scroll="true" enable-zoom="true" enable-rotate="false"></map>
+    <map class="summer-map" latitude="{{mapCenter.latitude}}" longitude="{{mapCenter.longitude}}" scale="{{mapScale}}" markers="{{markers}}" polyline="{{polyline}}" bindmarkertap="openMarker" bindcallouttap="openMarker" show-location="false" enable-scroll="true" enable-zoom="true" enable-rotate="false"></map>
     <view class="map-key"><text>● TAP A STOP</text><text>ROUTE / 01—04</text></view>
+  </view>
+  <view class="pin-entry" bindtap="openPinSheet" hover-class="pin-pressed"><text>把你的夏天放进地图</text><text>+ DROP YOUR PIN</text></view>
+  <view wx:if="{{pin.place}}" class="visitor-pin">
+    <view class="pin-heading"><text>你的夏天</text><text>YOUR PIN</text></view>
+    <text class="pin-place">{{pin.place}}</text>
+    <text wx:if="{{pinVibeLabel}}" class="pin-vibe">{{pinVibeLabel}}</text>
+    <text wx:if="{{pin.note}}" class="pin-note">“{{pin.note}}”</text>
+    <text class="pin-caption">地点心愿 · 尚未定位到地图</text>
+    <view class="pin-edit" bindtap="openPinSheet">重新编辑 →</view>
+    <view wx:if="{{match}}" class="pin-match">
+      <text>和你的夏天最接近的是</text>
+      <view class="match-link" bindtap="openMatch"><text>{{match.name}}</text><text>查看地点 →</text></view>
+      <text class="pin-vibe">{{match.percent}}% VIBE MATCH · 体验匹配</text>
+      <view class="pin-edit" bindtap="toggleMatch">{{matchExpanded ? '收起解释' : '看看为什么'}} {{matchExpanded ? '−' : '+'}}</view>
+      <text wx:if="{{matchExpanded}}" class="pin-caption">{{match.reason}}</text>
+    </view>
   </view>
   <view class="stop-ledger">
     <view wx:for="{{stops}}" wx:key="id" class="stop-row" data-id="{{item.id}}" bindtap="openDetail">
@@ -16,3 +32,21 @@
 </view>
 </scroll-view>
 <app-nav active="map"></app-nav>
+<view wx:if="{{pinSheetOpen}}" class="pin-overlay">
+  <view class="pin-scrim" bindtap="closePinSheet" catchtouchmove="stopSheetTouch"></view>
+  <view class="pin-sheet">
+    <view class="pin-heading"><text>把你的夏天放进地图</text><view class="pin-close" bindtap="closePinSheet">关闭 ×</view></view>
+    <scroll-view class="pin-fields" scroll-y show-scrollbar="false">
+      <text class="pin-question">01 / 今年夏天，你最想把一个地点留在哪里？</text>
+      <text class="pin-caption">输入城市 / 地点 · 最多 30 字</text>
+      <input class="pin-input" value="{{pinDraft.place}}" maxlength="30" placeholder="例如：东京、青岛、成都" bindinput="inputPinPlace" adjust-position="true" />
+      <text class="pin-question">02 / 这个地方给你的感觉更接近哪一种？</text>
+      <text class="pin-caption">单选，也可以先只留下地点。</text>
+      <view class="vibe-options"><view wx:for="{{vibes}}" wx:key="id" class="vibe-option {{pinDraft.vibe === item.id ? 'vibe-selected' : ''}}" data-id="{{item.id}}" bindtap="selectPinVibe"><text>{{item.label}}</text><text>{{item.en}}</text></view></view>
+      <text class="pin-question">03 / 如果只能给这个地方留一句话，你会写什么？</text>
+      <input class="pin-input" value="{{pinDraft.note}}" maxlength="40" placeholder="可选 · 最多 40 字" bindinput="inputPinNote" adjust-position="true" />
+      <text wx:if="{{pinError}}" class="pin-error">{{pinError}}</text>
+      <view class="pin-save" bindtap="savePin" hover-class="pin-pressed">保存你的夏天 →</view>
+    </scroll-view>
+  </view>
+</view>

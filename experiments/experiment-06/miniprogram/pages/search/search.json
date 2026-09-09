@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "搜索",
+  "usingComponents": {
+    "post-grid": "/components/post-grid/post-grid"
+  },
+  "onReachBottomDistance": 180
+}

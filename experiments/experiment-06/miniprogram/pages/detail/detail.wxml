@@ -1,0 +1,17 @@
+<view class="screen">
+  <view class="row between"><text class="eyebrow">校园瞬间</text><text class="small" bindtap="goHome">返回首页</text></view>
+  <view wx:if="{{loading}}" class="state">正在打开这一刻…</view>
+  <view wx:if="{{error}}" class="state error">{{error}}<button class="secondary" bindtap="loadDetail">重新加载</button></view>
+  <block wx:if="{{post}}"><post-card post="{{post}}" detail bind:likechange="onLikeChange" bind:commentfocus="focusComment" /><view class="detail-meta"><text>{{post.viewCount}} 次浏览</text><button wx:if="{{post.isOwner}}" class="delete-post" bindtap="deletePost" loading="{{deleting}}" disabled="{{deleting}}">删除动态</button></view>
+    <view class="actions"><button class="secondary" bindtap="preview">全屏预览</button><button class="secondary" bindtap="chooseSave" loading="{{saving}}" disabled="{{saving}}">保存照片</button><button class="primary" open-type="share">分享 ↗</button></view>
+  </block>
+  <view wx:if="{{showSavePicker}}" class="save-picker"><view class="row between"><text class="section-title">选择要保存的照片</text><button class="secondary" bindtap="closeSave">关闭</button></view><view class="picker-grid"><image wx:for="{{post.images}}" wx:key="*this" src="{{item}}" mode="aspectFill" data-index="{{index}}" bindtap="saveSelected" /></view></view>
+
+  <block wx:if="{{post}}">
+    <view class="section-title">评论 <text class="small">{{post.commentCount}}</text></view>
+    <view id="comment-compose" class="comment-compose"><textarea placeholder="说点什么…" maxlength="500" value="{{commentText}}" bindinput="inputComment" focus="{{commentFocus}}" disabled="{{commentPending}}" auto-height /><button class="primary" bindtap="sendComment" disabled="{{sending || !commentText}}" loading="{{sending}}">{{commentPending ? '重试' : '发送'}}</button></view>
+    <view wx:if="{{commentError}}" class="error">{{commentError}}<button wx:if="{{!commentPending}}" class="secondary" bindtap="retryComments">重新加载评论</button></view>
+    <view wx:for="{{comments}}" wx:key="_id" class="comment-row"><image class="avatar" src="{{item.avatarUrl || '/images/default-avatar.png'}}" mode="aspectFill" data-openid="{{item._openid}}" bindtap="openCommentUser" /><view class="comment-body"><view class="comment-name">{{item.authorName}}</view><view class="comment-content">{{item.content}}</view><view class="small">{{item.timeText}}</view></view></view>
+    <view wx:if="{{commentsLoading}}" class="state">正在加载评论…</view><view wx:elif="{{!comments.length && !commentError}}" class="state">来写下第一条评论吧</view>
+  </block>
+</view>

@@ -6,7 +6,7 @@
     data-key="{{item.key}}"
     bindtap="goTo"
   >
-    <text class="nav-mark">{{item.mark}}</text>
+    <text class="nav-chinese">{{item.chinese}}</text>
     <text class="nav-label">{{item.label}}</text>
   </view>
 </view>

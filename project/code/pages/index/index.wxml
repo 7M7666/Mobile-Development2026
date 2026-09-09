@@ -1,5 +1,5 @@
 <view
-  class="story theme-{{slide.page}} progress-{{slide.progressTheme}}"
+  class="story wrapped-edition theme-{{slide.page}} progress-{{slide.progressTheme}}"
   style="height: {{viewportHeight}}px; min-height: {{viewportHeight}}px; padding-top: {{top}}px; padding-bottom: {{bottom}}px; background: {{slide.background}};"
 >
   <view class="progress" aria-label="Story progress">
@@ -10,13 +10,15 @@
     ></view>
   </view>
 
-  <view class="main" bindtap="tapStory" bindtouchstart="touchStart" bindtouchend="touchEnd">
+  <view class="main" bindtap="tapStory" bindtouchstart="touchStart" bindtouchend="touchEnd" bindtouchcancel="touchCancel">
+    <scroll-view class="story-scroll" scroll-y="{{!detailSheet}}" enable-flex="true" show-scrollbar="false" scroll-into-view="wrapped-top-{{currentSlide}}">
     <include src="./slides.wxml" />
-
+    </scroll-view>
   </view>
 
   <view class="story-exit" style="top: {{top}}px;" bindtap="exitWrapped" aria-role="button" aria-label="Exit Summer Wrapped">
     <text>×</text>
   </view>
+  <include src="./details.wxml" />
   <canvas id="summer-poster-canvas" type="2d" class="poster-canvas" width="1080" height="1920"></canvas>
 </view>

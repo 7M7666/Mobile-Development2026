@@ -1,5 +1,5 @@
 <block>
-  <view wx:if="{{slide.page == 'cover'}}" class="page cover" data-key="{{animationKey}}">
+  <view wx:if="{{slide.page == 'cover'}}" class="page cover" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <view class="dots cover-dots" aria-hidden="true">
       <view wx:for="{{dots}}" wx:key="*this" class="dot"></view>
     </view>
@@ -28,33 +28,35 @@
       <text class="cover-wrapped">WRAPPED</text>
     </view>
 
-    <text class="cover-year">{{slide.year}}</text>
+    <text class="cover-edition-year">{{slide.year}}</text>
 
     <view class="cover-bottom">
+      <text class="wrapped-cover-copy">我的暑假，你的版本</text><text class="wrapped-label">MY SUMMER. YOUR VERSION.</text>
+      <text wx:if="{{slide.visitor.hasTrace}}" class="wrapped-caption">欢迎回来，你留下的选择都在这里。</text>
       <view class="metrics">
         <view class="metric">
           <text class="metric-num">{{slide.days}}</text>
-          <text class="metric-name">DAYS</text>
+          <text class="metric-name">天 / DAYS</text>
         </view>
         <view class="metric">
           <text class="metric-num">{{slide.placeCount}}</text>
-          <text class="metric-name">PLACES</text>
+          <text class="metric-name">站 / PLACES</text>
         </view>
         <view class="metric">
           <text class="metric-num">{{slide.photoCount}}</text>
-          <text class="metric-name">PHOTOS</text>
+          <text class="metric-name">张 / PHOTOS</text>
         </view>
       </view>
 
-      <view class="start" catchtap="start" aria-role="button" aria-label="Start Story">
-        <text>{{canContinue ? 'START OVER' : 'START'}}</text>
+      <view class="start" mark:storyControl="cta" data-story-control="cta" catchtap="start" aria-role="button" aria-label="Start Story">
+        <text>{{canContinue ? '重新开始' : '开始回顾'}}</text>
         <text class="start-arrow">→</text>
       </view>
-      <view wx:if="{{canContinue}}" class="continue" catchtap="continueStory" aria-role="button" aria-label="Continue Story"><text>CONTINUE</text><text>→</text></view>
+      <view wx:if="{{canContinue}}" class="continue" mark:storyControl="cta" data-story-control="cta" catchtap="continueStory" aria-role="button" aria-label="Continue Story"><text>继续上次回顾</text><text>→</text></view>
     </view>
   </view>
 
-  <view wx:elif="{{slide.number == '02'}}" class="page intro" data-key="{{animationKey}}">
+  <view wx:elif="{{slide.number == '02'}}" class="page intro" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <image class="intro-photo" src="{{slide.coverPhoto.src}}" mode="aspectFill"></image>
     <view class="dots intro-dots" aria-hidden="true">
       <view wx:for="{{dots}}" wx:key="*this" class="dot"></view>
@@ -69,12 +71,13 @@
     <text class="intro-label">02 / OPENING NOTE</text>
 
     <view class="intro-title">
-      <text>35 DAYS.</text>
-      <text>FOUR STOPS.</text>
-      <text>ONE SUMMER</text>
-      <text>THAT DIDN'T FOLLOW THE PLAN.</text>
+      <text>35 天。四站。</text>
+      <text>这个夏天，</text>
+      <text>没有照计划走。</text>
+      <text class="edition-subtitle">ONE SUMMER. OFF SCRIPT.</text>
     </view>
 
+    <text wx:if="{{slide.visitor.interactionCount > 0}}" class="wrapped-note intro-trace">你选过的地点、路线和偏好，都会出现在这份回顾里。</text>
     <view class="scribble intro-line" aria-hidden="true">
       <view class="line line-1"></view>
       <view class="line line-2"></view>
@@ -82,7 +85,7 @@
     </view>
   </view>
 
-  <view wx:elif="{{slide.number == '03'}}" class="page days" data-key="{{animationKey}}">
+  <view wx:elif="{{slide.number == '03'}}" class="page days" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <view class="days-head">
       <text class="days-label">03 / THE SPAN</text>
       <text class="days-note">SUMMER 2026</text>
@@ -95,12 +98,13 @@
     </view>
 
     <text class="days-number">{{slide.days}}</text>
-    <view class="days-strip"><text>DAYS</text></view>
+    <view class="days-strip"><text>天，在路上。</text></view>
 
     <view class="days-ruler" aria-hidden="true"><view wx:for="{{slide.ticks}}" wx:key="*this" class="days-tick {{item == 1 || item == 15 || item == 35 ? 'days-tick-on' : ''}}"></view></view>
     <view class="span-months"><text>JUL / 15 DAYS</text><text>AUG / 20 DAYS</text></view>
     <text class="slide-cn span-cn">从 7 月 17 日到 8 月 20 日，这个暑假一共走了 35 天。</text>
 
+    <text wx:if="{{slide.visitor.durationText}}" class="wrapped-caption">{{slide.visitor.durationText}}</text>
     <view class="scribble days-line" aria-hidden="true">
       <view class="line line-1"></view>
       <view class="line line-2"></view>
@@ -108,19 +112,22 @@
     </view>
   </view>
 
-  <view wx:elif="{{slide.number == '04'}}" class="page timeline" data-key="{{animationKey}}">
+  <view wx:elif="{{slide.number == '04'}}" class="page timeline" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <view class="ledger-head"><text>04 / WHERE IT WENT</text><text>JOURNEY LEDGER</text></view>
-    <view class="ledger"><view wx:for="{{slide.ledger}}" wx:key="number" class="ledger-row"><text>{{item.number}}</text><view><text>{{item.name}}</text><text>{{item.note}}</text></view><text>{{item.month}}</text></view></view>
-    <text class="ledger-copy">FOUR STOPS, IN ORDER.<br/>A SUMMER THAT KEPT MOVING.</text>
+    <text class="edition-heading">一路向远方。</text><text class="wrapped-label">我的路线 · MY JOURNEY</text>
+    <view class="ledger"><view wx:for="{{slide.ledger}}" wx:key="number" class="ledger-row ledger-row-{{index}}"><text>{{item.number}}</text><view><text>{{item.name}}</text><text>{{item.note}}</text></view><text>{{item.month}}</text></view></view>
+    <view wx:if="{{slide.visitor.route}}" class="story-detail-entry" mark:storyControl="cta" data-story-control="cta" data-kind="route" catchtap="openDetailSheet"><text>你会怎么走？</text><text>展开 ↗</text></view>
+    <text class="ledger-copy">四站，依次经过。<br/>这个夏天，一直在移动。</text>
   </view>
 
-  <view wx:elif="{{slide.number == '05'}}" class="page places" data-key="{{animationKey}}">
+  <view wx:elif="{{slide.number == '05'}}" class="page places" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <view class="four-head"><text>05 / FOUR PLACES</text><text>04 / 04</text></view>
-    <view class="four-grid"><view wx:for="{{slide.places}}" wx:key="id" class="four-card four-card-{{index}}"><image src="{{item.photo.src}}" mode="aspectFill"></image><text>{{item.name}}</text></view></view>
+    <view class="four-grid"><view wx:for="{{slide.places}}" wx:key="id" class="four-card four-card-{{index}} {{slide.visitor.emphasis.placeId === item.id ? 'four-visitor-focus' : ''}}"><image src="{{item.photo.src}}" mode="aspectFill"></image><text>{{item.name}}</text></view></view>
+    <view wx:if="{{slide.visitor.emphasis}}" class="wrapped-note"><text>但你没有平均地看待它们。</text><text class="wrapped-caption">{{slide.visitor.emphasis.text}}</text></view>
     <text class="four-copy">同一个暑假，<br/>在四个地方变成了四种不同的样子。</text>
   </view>
 
-  <view wx:elif="{{slide.page == 'summer-map'}}" class="page summer-map" data-key="{{animationKey}}">
+  <view wx:elif="{{slide.page == 'summer-map'}}" class="page summer-map" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <view class="map-head">
       <text class="map-label">06 / SUMMER MAP</text>
       <text class="map-note">FOUR STOPS</text>
@@ -131,8 +138,8 @@
     </view>
 
     <view class="map-title">
-      <text>SUMMER</text>
-      <text>IN MOTION.</text>
+      <text>从广西，</text>
+      <text>到新疆。</text>
     </view>
 
     <view class="map-space" aria-label="Editorial route connecting four summer places">
@@ -149,6 +156,7 @@
 
     <view class="map-stripe" aria-hidden="true"></view>
     <text class="slide-cn map-cn">从广西一路到新疆，四站组成了这个暑假的移动轨迹。</text>
+    <view wx:if="{{slide.visitor.pin}}" class="wrapped-note wrapped-pin"><text class="wrapped-label">你的夏天 · YOUR PIN</text><text>{{slide.visitor.pin.place}}</text><text wx:if="{{slide.visitor.pin.vibeLabel}}" class="wrapped-caption">{{slide.visitor.pin.vibeLabel}}</text><text class="wrapped-caption">地点心愿 · 未定位到地图</text><text wx:if="{{slide.visitor.vibeMatch}}" class="wrapped-caption">与你最接近：{{slide.visitor.vibeMatch.name}} · {{slide.visitor.vibeMatch.percent}}% 体验匹配</text></view>
     <view class="scribble map-line" aria-hidden="true">
       <view class="line line-1"></view>
       <view class="line line-2"></view>
@@ -156,125 +164,120 @@
     </view>
   </view>
 
-  <view wx:elif="{{slide.page == 'top-place'}}" class="page top-place" data-key="{{animationKey}}">
+  <view wx:elif="{{slide.page == 'top-place'}}" class="page top-place" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <view class="top-place-rebuild-head"><text>07 / MY TOP PLACE</text><text>SUMMER 2026</text></view>
-    <view class="top-place-rebuild-hero"><image src="{{slide.topPlace.photo.src}}" mode="aspectFill"></image><text>BAYINBULUKE</text></view>
-    <view class="top-place-rebuild-body"><text class="top-place-rebuild-label">MY TOP PLACE</text><view class="top-place-rebuild-stats"><view><text>BIGGEST DAY</text><text>AUG 01</text></view><view><text>500+ KM</text><text>ON THE ROAD</text></view><view><text>FIRST</text><text>1.5 KM GRASS SLIDE</text></view></view><text class="top-place-rebuild-why">{{slide.why}}</text></view>
+    <view class="top-place-rebuild-hero"><image src="{{slide.topPlace.photo.src}}" mode="aspectFill"></image><text>巴音布鲁克</text></view>
+    <view class="top-place-rebuild-body"><text class="top-place-rebuild-label">最想留下的一站 / BAYINBULUKE</text><view class="top-place-rebuild-stats"><view><text>BIGGEST DAY</text><text>AUG 01</text></view><view><text>500+ KM</text><text>ON THE ROAD</text></view><view><text>FIRST</text><text>1.5 KM GRASS SLIDE</text></view></view><text class="top-place-rebuild-why">{{slide.why}}</text>
+      <view wx:if="{{slide.visitor.match}}" class="wrapped-note"><text class="wrapped-label">你的 Match</text><text>{{slide.visitor.match.name}}</text><text class="wrapped-caption">{{slide.visitor.match.reason}}</text><text wx:if="{{slide.visitor.match.placeId === 'bayinbuluke'}}" class="wrapped-caption">我们最后停在了同一个地方。</text></view></view>
   </view>
 
-  <view wx:elif="{{slide.page == 'biggest'}}" class="page biggest" data-key="{{animationKey}}">
-    <view class="big-rings" aria-hidden="true">
-      <view class="ring ring-1"></view>
-      <view class="ring ring-2"></view>
-      <view class="ring ring-3"></view>
-      <view class="ring ring-4"></view>
-      <view class="ring ring-5"></view>
-    </view>
-
-    <view class="big-head">
-      <text class="big-eyebrow">● BIGGEST SUMMER DAY</text>
-    </view>
-
-    <view class="big-hero">
-      <view class="big-date">
-        <text class="big-month">{{slide.biggestDay.displayDate.month}}</text>
-        <text class="big-day">{{slide.biggestDay.displayDate.day}}</text>
-      </view>
-      <view class="big-title">
-        <text>THE DAY</text>
-        <text>EVERYTHING FELT</text>
-        <text>BIGGER.</text>
-      </view>
-    </view>
-    <image class="big-photo" src="{{slide.photo.src}}" mode="aspectFill"></image>
-
-      <view class="report">
-      <view class="report-head">
-        <text class="report-label">DAY REPORT</text>
-      </view>
-
-      <view class="report-stats">
-        <view wx:for="{{slide.biggestDay.stats}}" wx:key="label" class="report-stat stat-{{index}}">
-          <text class="report-num">{{item.value}}</text>
-          <text class="report-name">{{item.label}}</text>
-        </view>
-      </view>
-
-      <view class="report-copy en-copy">
-        <view wx:for="{{slide.biggestDay.copy}}" wx:key="*this">{{item}}</view>
-      </view>
-      <text class="big-why">WHY AUG 01? {{slide.why}}</text>
-    </view>
-    <view class="big-support"><text>AUG 01 / WHY IT STAYED</text><image src="{{slide.supportPhoto.src}}" mode="aspectFill"></image><text>路很长，风很大，记忆也最清楚。</text></view>
-
-    <view class="scribble big-line" aria-hidden="true">
-      <view class="line line-1"></view>
-      <view class="line line-2"></view>
-      <view class="line line-3"></view>
-    </view>
+  <view wx:elif="{{slide.page == 'biggest'}}" class="page biggest" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
+    <text class="wrapped-label">08 / 最难忘的一天</text>
+    <view class="day-edition-head"><view><text>{{slide.biggestDay.displayDate.month}}</text><text>{{slide.biggestDay.displayDate.day}}</text></view><text>这一天，<br/>一切都变大了。</text></view>
+    <image class="day-edition-photo" src="{{slide.photo.src}}" mode="aspectFill"></image>
+    <view class="day-edition-facts"><view><text>500+ KM</text><text>在路上</text></view><view><text>1.5 KM</text><text>第一次草滑</text></view></view>
+    <text class="day-edition-note">路很长，风很大，记忆也最清楚。</text>
+    <view wx:if="{{slide.visitor.decision}}" class="story-detail-entry" mark:storyControl="cta" data-story-control="cta" data-kind="decision" catchtap="openDetailSheet"><text>同一个情境，你会怎么选？</text><text>展开 ↗</text></view>
   </view>
 
-  <view wx:elif="{{slide.page == 'moments'}}" class="page moments" data-key="{{animationKey}}">
-    <view class="moments-head"><text class="moments-label">09 / TOP MOMENTS</text><text class="moments-count">{{slide.momentCount}} {{slide.momentLabel}}</text></view>
-    <text class="moments-title">THREE THINGS<br/>I KEPT<br/>REPLAYING.</text>
+  <view wx:elif="{{slide.page == 'moments'}}" class="page moments" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
+    <view class="moments-head"><text class="moments-label">09 / TOP MOMENTS</text><text class="moments-count">{{slide.visitor.moment ? '你的片段' : slide.momentCount + ' ' + slide.momentLabel}}</text></view>
+    <view wx:if="{{slide.visitor.moment}}" class="wrapped-moment"><text class="wrapped-story-title">{{slide.visitor.moment.title}}</text><image class="wrapped-memory-photo" src="{{slide.visitor.moment.photo.src}}" mode="aspectFill"></image><text class="wrapped-note">{{slide.visitor.moment.caption}}</text><text class="wrapped-caption">{{slide.visitor.moment.reason}}</text><text wx:if="{{slide.visitor.moment.detail}}" class="wrapped-caption">{{slide.visitor.moment.detail}}</text></view>
+    <block wx:else>
+    <text class="moments-title">反复想起的，<br/>是这三个画面。</text>
     <view class="moment-list"><view wx:for="{{slide.moments}}" wx:key="number" class="moment moment-{{index}}"><image class="moment-photo" src="{{item.photo.src}}" mode="aspectFill" aria-label="{{item.name}}"></image><view class="moment-copy"><text class="moment-number">{{item.number}}</text><text class="moment-name">{{item.name}}</text></view></view></view>
     <text class="slide-cn moments-cn">回头望望这个夏天，原来跳出来的就是这三个画面。</text>
+    </block>
   </view>
 
-  <view wx:elif="{{slide.page == 'photo-number'}}" class="page photo-number" data-key="{{animationKey}}">
+  <view wx:elif="{{slide.page == 'photo-number'}}" class="page photo-number" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <view class="photo-number-head">
       <text class="photo-number-label">10 / PHOTO NUMBER</text>
       <text class="photo-number-moments">{{slide.momentCount}} {{slide.momentLabel}}.</text>
     </view>
 
     <text class="photo-count">{{slide.photoCount}}</text>
-    <view class="photo-word"><text>PHOTOS</text></view>
+    <view class="photo-word"><text>张照片。</text></view>
     <text class="sample-label">{{slide.archivePhotoCount}} MADE THE ARCHIVE.</text>
 
-    <text class="slide-cn photo-cn">245 张，是整个暑假的拍摄总量。<br/>其中 30 张，最后进入了这份数字档案。</text>
+    <text class="slide-cn photo-cn">{{slide.photoCount}} 张，是整个暑假的拍摄总量。<br/>其中 {{slide.archivePhotoCount}} 张，最后进入了这份数字档案。</text>
     <view class="photo-samples"><image wx:for="{{slide.photoSamples}}" wx:key="id" class="photo-sample sample-{{index}}" src="{{item.src}}" mode="aspectFill" aria-label="{{item.title}}"></image></view>
 
+    <view wx:if="{{slide.visitor.previewCount > 0}}" class="story-detail-entry" mark:storyControl="cta" data-story-control="cta" data-kind="preview" catchtap="openDetailSheet"><text>看看你打开过的照片</text><text>展开 ↗</text></view>
     <view class="dots photo-number-dots" aria-hidden="true">
       <view wx:for="{{dots}}" wx:key="*this" class="dot"></view>
     </view>
   </view>
 
-  <view wx:elif="{{slide.page == 'planned-reality'}}" class="page planned-reality" data-key="{{animationKey}}">
-    <view class="plan-rebuild-top"><text class="plan-rebuild-title">11 / PLANNED VS REALITY</text><view class="plan-rebuild-list"><text>SUMMER PLAN</text><text>☐ STUDY IELTS</text><text>☐ STAY ON TRACK</text><text>☐ FOLLOW THE PLAN</text><text>✕ IELTS PLAN</text></view><view class="plan-rebuild-tags"><text>GAMES</text><text>FRIENDS</text><text>FOOD</text><text>TRIPS</text></view><text class="plan-rebuild-won">REALITY WON.</text><text class="plan-rebuild-copy">计划写的是 IELTS，现实写成了 FRIENDS / GAMES / FOOD / TRIPS。</text></view>
+  <view wx:elif="{{slide.page == 'planned-reality'}}" class="page planned-reality" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
+    <view class="plan-rebuild-top"><text class="plan-rebuild-title">11 / PLANNED VS REALITY</text>
+      <text class="edition-heading">计划写好了。<br/>夏天另有安排。</text>
+      <view class="plan-edition-spread">
+        <view class="plan-rebuild-list"><text>原计划 / PLAN</text><text>学雅思</text><text>保持进度</text><text>照计划走</text><text>IELTS PLAN</text></view>
+        <view class="plan-rebuild-tags"><text>实际 / REALITY</text><text>游戏 / GAMES</text><text>朋友 / FRIENDS</text><text>美食 / FOOD</text><text>旅行 / TRIPS</text></view>
+      </view>
+      <text class="plan-rebuild-won">现实赢了。</text><text class="plan-rebuild-copy">计划写的是 IELTS，现实写成了 FRIENDS / GAMES / FOOD / TRIPS。</text>
+    </view>
     <image class="plan-rebuild-photo" src="{{slide.realityPhoto.src}}" mode="aspectFill"></image>
+    <view wx:if="{{slide.visitor.routeNarrative}}" class="story-detail-entry" mark:storyControl="cta" data-story-control="cta" data-kind="plan" catchtap="openDetailSheet"><text>而你，又怎样改写了路线？</text><text>展开 ↗</text></view>
   </view>
 
-  <view wx:elif="{{slide.page == 'summer-type'}}" class="page summer-type" data-key="{{animationKey}}">
-    <text class="summer-type-rebuild-label">YOUR SUMMER TYPE</text>
-    <view class="summer-type-rebuild-name"><text>OFF</text><text>/</text><text>SCRIPT</text></view>
-    <view class="summer-type-rebuild-tags"><text wx:for="{{slide.summerType.tags}}" wx:key="*this">{{item}}</text></view>
-    <view class="summer-type-rebuild-facts"><view><text>PLAN</text><text>→</text><text>IELTS</text></view><view><text>REALITY</text><text>→</text><text>4 PLACES</text></view><view><text>WHAT FILLED IT</text><text>→</text><text>FRIENDS / FOOD /<br/>GAMES / TRIPS</text></view></view>
-    <view class="summer-type-rebuild-statement"><text>NOT ON THE PLAN.</text><text>STILL THE SUMMER.</text></view>
-    <view class="summer-type-rebuild-why"><text>WHY THIS TYPE?</text><text>计划里留着位置，日程之外更留着即兴的缝隙。<br/>朋友、食物和临时决定，所以这个夏天叫做 OFF SCRIPT。</text></view>
+  <view wx:elif="{{slide.page == 'summer-type'}}" class="page summer-type" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
+    <text class="wrapped-label">13 / 你的版本</text>
+    <view class="type-edition-hero"><text class="wrapped-story-title">一路走到这里，<br/>这就是你留下来的样子。</text>
+    <block wx:if="{{slide.visitor.type}}"><text class="wrapped-type-name">{{slide.visitor.type.label}}</text><text class="wrapped-label">{{slide.visitor.type.en}}</text><text class="wrapped-caption">{{slide.visitor.type.description}}</text></block>
+    <block wx:else><text class="wrapped-type-name">从你的第一个选择开始</text><text class="wrapped-caption">留下一项偏好，让这份档案有自己的方向。</text></block>
+    </view><view class="wrapped-signals"><view wx:for="{{slide.visitor.signals}}" wx:key="id" class="wrapped-signal"><view><text>{{item.label}}</text><text>{{item.value}}</text></view><view class="wrapped-signal-track"><view style="width: {{item.value}}%;"></view></view></view></view>
+    <text class="wrapped-caption">你的六种旅行倾向</text>
+    <view wx:if="{{slide.visitor.evidence.length}}" class="story-detail-entry" mark:storyControl="cta" data-story-control="cta" data-kind="evidence" catchtap="openDetailSheet"><text>为什么是这个旅行者？</text><text>展开 ↗</text></view>
   </view>
 
-  <view wx:elif="{{slide.page == 'soundtrack'}}" class="page soundtrack" data-key="{{animationKey}}">
+  <view wx:elif="{{slide.page == 'soundtrack'}}" class="page soundtrack" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <text class="sound-rebuild-label">12 / SUMMER SOUNDTRACK</text>
+    <text class="wrapped-note sound-question">这一版夏天，<br/>你会留下哪一首？</text>
     <text class="sound-rebuild-kicker">THREE SONGS. ONE SUMMER.</text>
-    <view class="sound-rebuild-feature" data-index="{{slide.activeTrackIndex}}" catchtap="selectTrack">
-      <text>{{slide.activeTrack.number}}</text>
-      <view><text>{{slide.activeTrack.title}}</text><text>{{slide.activeTrack.artist}}</text></view>
-      <view class="sound-rebuild-wave" aria-hidden="true"><view wx:for="{{dots}}" wx:key="*this"></view></view>
+    <view class="sound-controls" mark:storyControl="soundtrack" catchtap="stopStoryTap">
+      <view class="sound-rebuild-feature" data-index="{{slide.activeTrackIndex}}" catchtap="selectTrack" aria-role="button">
+        <text>{{slide.activeTrack.number}}</text>
+        <view><text>{{slide.activeTrack.title}}</text><text>{{slide.activeTrack.artist}}</text><text class="sound-selection-status">{{slide.visitor.soundtrack ? '已选择' : '点选这首歌'}}</text></view>
+        <view class="sound-rebuild-wave" aria-hidden="true"><view wx:for="{{dots}}" wx:key="*this"></view></view>
+      </view>
+      <view wx:for="{{slide.soundtrack.tracks}}" wx:for-item="track" wx:for-index="trackIndex" wx:key="number" class="sound-rebuild-track {{slide.visitor.soundtrack.number === track.number ? 'sound-rebuild-track-on' : ''}}" data-index="{{trackIndex}}" catchtap="selectTrack" aria-role="button" aria-label="{{track.title}}">
+        <text>{{track.number}}</text><view><text>{{track.title}}</text><text>{{track.artist}}</text><text>{{track.reason}}</text><text class="sound-selection-status">{{slide.visitor.soundtrack.number === track.number ? '已选择' : '选择这首歌 →'}}</text></view>
+      </view>
     </view>
-    <view wx:for="{{slide.secondaryTracks}}" wx:for-item="track" wx:key="number" class="sound-rebuild-track {{slide.activeTrackIndex == track.index ? 'sound-rebuild-track-on' : ''}}" data-index="{{track.index}}" catchtap="selectTrack">
-      <text>{{track.number}}</text>
-      <view><text>{{track.title}}</text><text>{{track.artist}}</text><text>{{track.reason}}</text></view>
-    </view>
+    <text class="wrapped-caption">{{trackSaveNotice || (slide.visitor.soundtrack ? '你留下了：' + slide.visitor.soundtrack.title : '点选一首，把它留给你的版本。')}}</text>
     <text class="sound-rebuild-footer">LOUD / SOFT / ON THE MOVE</text>
   </view>
 
-  <view wx:elif="{{slide.page == 'final'}}" class="page placeholder final-placeholder" data-key="{{animationKey}}" catchtap="stopStoryTap">
-    <view class="final-poster-columns"><view class="final-poster-photo-column"><image wx:for="{{slide.endingColumns.left}}" wx:key="id" src="{{item.src}}" mode="aspectFill"></image></view><view class="final-poster-copy"><text>14 / SUMMER WRAPPED</text><text>THIS WAS</text><text>MY SUMMER.</text><text>{{slide.finalPoster.year}}</text><text>{{slide.finalPoster.days}} DAYS</text><text>{{slide.finalPoster.placeCount}} PLACES</text><text>{{slide.finalPoster.photoCount}} PHOTOS</text></view><view class="final-poster-photo-column"><image wx:for="{{slide.endingColumns.right}}" wx:key="id" src="{{item.src}}" mode="aspectFill"></image></view></view>
-    <view class="poster-actions" style="z-index: 40;"><view class="final-action final-generate" catchtap="handlePosterAction" aria-role="button"><text>{{posterGenerating ? 'GENERATING...' : (posterPath ? 'PREVIEW POSTER' : 'GENERATE MY POSTER')}}</text></view><view wx:if="{{posterPath}}" class="final-action final-save" catchtap="savePoster" aria-role="button"><text>SAVE POSTER</text></view></view>
-    <view class="final-actions" style="z-index: 40;"><view class="final-action final-replay" catchtap="replay" aria-role="button"><text>PLAY AGAIN</text></view><view class="final-action final-cut" catchtap="openCut" aria-role="button"><text>MAKE YOUR CUT</text></view><view class="final-action final-summer" catchtap="backToSummer" aria-role="button"><text>BACK TO SUMMER</text></view></view>
+  <view wx:elif="{{slide.page == 'final'}}" class="page placeholder final-placeholder" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;" catchtap="stopStoryTap">
+    <text class="wrapped-label">14 / YOUR SUMMER, RE-CUT</text>
+    <text class="wrapped-story-title final-narrative">同一个夏天。<br/>你的版本，<br/>从这里开始。</text>
+    <view class="final-cut-board">
+      <view wx:for="{{slide.cutModel.elements}}" wx:key="id" class="final-cut-piece {{item.user ? 'final-user-piece' : ''}}" style="{{item.style}}">
+        <image wx:if="{{item.type === 'photo'}}" src="{{item.src}}" mode="aspectFill"></image>
+        <text wx:else>{{item.title}}</text>
+      </view>
+    </view>
+    <view wx:if="{{slide.visitor.type || slide.visitor.pin || slide.visitor.route || slide.visitor.soundtrack}}" class="final-summary">
+      <text wx:if="{{slide.visitor.type}}" class="final-type">{{slide.visitor.type.label}}</text>
+      <text wx:if="{{slide.visitor.pin}}">你的地点 · {{slide.visitor.pin.place}}</text>
+      <text wx:if="{{slide.visitor.route}}">你的路线 · {{slide.visitor.route.path}}</text>
+      <text wx:if="{{slide.visitor.soundtrack}}">你的歌 · {{slide.visitor.soundtrack.title}}</text>
+    </view>
+    <view class="wrapped-cut-cta" mark:storyControl="cta" data-story-control="cta" catchtap="openCut" aria-role="button"><text>做出你的版本 →</text><text>MAKE YOUR CUT</text></view>
+    <view class="poster-actions">
+      <view class="final-action final-generate" mark:storyControl="cta" data-story-control="cta" catchtap="handlePosterAction" aria-role="button"><text>{{posterGenerating ? '正在生成…' : (posterPath ? '预览当前版本海报' : '生成当前版本海报')}}</text></view>
+      <view wx:if="{{posterPath}}" class="final-action final-save" mark:storyControl="cta" data-story-control="cta" catchtap="savePoster" aria-role="button"><text>保存当前版本</text></view>
+    </view>
+    <text class="final-poster-note">{{slide.cutModel.piece.type ? '包含你留下的内容与当前排列。' : '先保存这四个片段，或加入你的内容再制作。'}}</text>
+    <view class="final-actions">
+      <view class="final-action final-replay" mark:storyControl="cta" data-story-control="cta" catchtap="replay" aria-role="button"><text>再看一遍</text><text>PLAY AGAIN</text></view>
+      <view class="final-action final-summer" mark:storyControl="cta" data-story-control="cta" catchtap="backToSummer" aria-role="button"><text>回到地图</text><text>BACK TO SUMMER</text></view>
+    </view>
   </view>
 
-  <view wx:else class="page placeholder" data-key="{{animationKey}}">
+  <view wx:else class="page placeholder" data-key="{{animationKey}}" id="wrapped-top-{{currentSlide}}" style="min-height: {{contentHeight}}px;">
     <text class="slide-num">{{slide.number}}</text>
     <text class="slide-name">{{slide.name}}</text>
     <text class="slide-index">INDEX {{currentSlide}}</text>

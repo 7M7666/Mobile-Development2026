@@ -1,0 +1,25 @@
+.post { padding: 32rpx 0; border-bottom: 1rpx solid #E7EDF5; }
+.author { display: flex; align-items: center; }
+.avatar { width: 72rpx; height: 72rpx; border-radius: 50%; background: #EFF5FC; flex-shrink: 0; }
+.author-info { flex: 1; margin-left: 20rpx; min-width: 0; }
+.name { font-size: 28rpx; font-weight: 800; color: #101114; }
+.meta { color: #667085; font-size: 20rpx; margin-top: 7rpx; line-height: 1.5; }
+.arrow { color: #667085; padding-left: 14rpx; }
+.caption { font-size: 29rpx; line-height: 1.85; margin: 24rpx 0; white-space: pre-wrap; word-break: break-all; }
+.photos { display: flex; flex-wrap: wrap; margin: 24rpx -3rpx 0; }
+.photo { width: calc(33.333% - 6rpx); height: 218rpx; margin: 3rpx; border-radius: 8rpx; background: #EFF5FC; }
+.count-1 .photo { width: calc(100% - 6rpx); height: 680rpx; border-radius: 14rpx; }
+.count-2 .photo, .count-4 .photo { width: calc(50% - 6rpx); height: 330rpx; }
+.tags { margin-top: 18rpx; }
+.tag { display: inline-block; color: #0965F3; font-size: 23rpx; margin: 4rpx 18rpx 4rpx 0; }
+.foot { display: flex; justify-content: space-between; color: #667085; font-size: 19rpx; letter-spacing: 1rpx; margin-top: 26rpx; }
+
+.social { background: transparent; color: #7B828D; font-size: 24rpx; font-weight: 600; padding: 0; margin: 0 34rpx 0 0; line-height: 1.5; display: flex; align-items: center; border: 0; }
+.social::after { border: 0; }
+.social.liked { color: #0965F3; }
+.heart { font-size: 39rpx; line-height: 1; margin-right: 9rpx; }
+.bubble { width: 25rpx; height: 22rpx; border: 2rpx solid currentColor; border-radius: 8rpx 8rpx 8rpx 0; margin-right: 12rpx; }
+.foot { align-items: center; justify-content: flex-start; }
+.social { width: auto; flex-shrink: 0; }
+.photo-total { margin-left: auto; flex-shrink: 0; white-space: nowrap; }
+.like-error { font-size: 22rpx; line-height: 1.6; color: #B94E49; padding-top: 12rpx; }

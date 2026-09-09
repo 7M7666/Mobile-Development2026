@@ -20,6 +20,23 @@
         </view>
       </view>
     </block>
+    <view wx:if="{{situation}}" class="situation">
+      <text class="situation-title">如果当时是你，你会怎么选？</text>
+      <text class="situation-kicker">WHAT WOULD YOU DO?</text>
+      <text wx:if="{{situation.time}}" class="situation-time">{{situation.time}}</text>
+      <text class="situation-scene">{{situation.scene}}</text>
+      <text class="situation-question">{{situation.question}}</text>
+      <view wx:if="{{choosing}}" class="situation-options">
+        <view wx:for="{{situation.choices}}" wx:key="id" class="situation-option {{decision.choice === item.id ? 'situation-last' : ''}}" data-choice="{{item.id}}" bindtap="selectDecision" hover-class="situation-pressed"><text>{{item.label}}</text><text>{{decision.choice === item.id ? '上次选择' : '选择 →'}}</text></view>
+      </view>
+      <view wx:else class="situation-result">
+        <view class="situation-you"><text class="situation-kicker">{{decisionRestored ? '你上次选择了' : '你的选择'}} · YOU</text><text class="situation-answer">{{decision.label}}</text></view>
+        <view class="situation-me"><text class="situation-kicker">我的选择 · ME</text><text class="situation-answer">{{decision.comparisonLabel}}</text><text class="situation-caption">我的互动对照版本</text></view>
+        <view class="situation-verdict"><text>{{decision.same ? '我们会做同一个选择。' : '这里，我们会走向两个不同的版本。'}}</text><text class="situation-kicker">{{decision.same ? 'SAME CHOICE.' : 'DIFFERENT CHOICE.'}}</text></view>
+        <view class="situation-reselect" bindtap="reselectDecision">重新选择 →</view>
+        <text wx:if="{{decisionSaveNotice}}" class="situation-caption">{{decisionSaveNotice}}</text>
+      </view>
+    </view>
   </block>
 </view>
 

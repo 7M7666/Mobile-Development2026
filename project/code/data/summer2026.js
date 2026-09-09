@@ -225,6 +225,33 @@ const photos = [
     priority: 8
   },
   {
+    id: 'nanning-dinosaur-garden',
+    src: '/assets/photos/nanning-dinosaur-garden.jpg',
+    title: '南宁绿荫里的恐龙造景',
+    placeId: 'nanning',
+    tags: ['广西', '南宁', '旅行', '植物', '风景'],
+    vibes: ['wild', 'quiet'],
+    priority: 9
+  },
+  {
+    id: 'nanning-street-crossing',
+    src: '/assets/photos/nanning-street-crossing.jpg',
+    title: '南宁路口的车流',
+    placeId: 'nanning',
+    tags: ['广西', '南宁', '街区', '人物', '日常'],
+    vibes: ['warm', 'random'],
+    priority: 9
+  },
+  {
+    id: 'nanning-zhongshan-night',
+    src: '/assets/photos/nanning-zhongshan-night.jpg',
+    title: '南宁中山路夜色',
+    placeId: 'nanning',
+    tags: ['广西', '南宁', '建筑', '夜景', '旅行'],
+    vibes: ['quiet', 'warm'],
+    priority: 9
+  },
+  {
     id: 'guiping-xishan-overlook',
     src: '/assets/photos/guiping-xishan-overlook.jpg',
     title: '桂平西山远眺',
@@ -323,7 +350,10 @@ const journeys = [
     photoIds: [
       'nanning-old-town',
       'nanning-night-market',
-      'nanning-water-street'
+      'nanning-water-street',
+      'nanning-dinosaur-garden',
+      'nanning-street-crossing',
+      'nanning-zhongshan-night'
     ],
     coverPhotoId: 'nanning-old-town'
   },
@@ -596,13 +626,16 @@ function rankPhotos(candidates) {
 }
 
 function buildCut(value, vibe) {
-  const rawQuery = normalizeQuery(value)
-  const query = resolveAlias(rawQuery)
+  const placeId = value && typeof value === 'object' ? value.placeId : null
+  const rawQuery = normalizeQuery(placeId || value)
+  const query = placeId ? rawQuery : resolveAlias(rawQuery)
   const pickedVibe = vibe || 'random'
   const ranked = []
 
   photos.forEach((photo, index) => {
-    const match = matchPhoto(photo, query)
+    const match = placeId
+      ? { matched: photo.placeId === placeId, placeMatch: photo.placeId === placeId, tagMatch: false, titleMatch: false }
+      : matchPhoto(photo, query)
 
     if (match.matched) {
       const scored = scorePhoto(photo, match, pickedVibe)

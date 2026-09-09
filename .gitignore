@@ -10,3 +10,7 @@ project.private.config.json
 /project/demo_analysis/tools/
 /project/demo_analysis/ffmpeg-release-essentials.zip
 /project/demo_analysis/encoder_test.mp4
+
+# Local original recording and editing notes
+/project/demo.mp4
+/project/demo_edit_plan.md

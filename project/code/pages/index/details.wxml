@@ -1,0 +1,18 @@
+<view wx:if="{{detailSheet}}" class="story-detail-overlay" catchtap="stopStoryTap">
+  <view class="story-detail-scrim" catchtap="closeDetailSheet" catchtouchmove="stopSheetTouch"></view>
+  <view class="story-detail-sheet" style="padding-bottom: {{bottom}}px;">
+    <view class="story-detail-heading"><text>你的版本 / YOUR VERSION</text><view catchtap="closeDetailSheet">关闭 ×</view></view>
+    <scroll-view class="story-detail-scroll" scroll-y="true" show-scrollbar="false">
+<block wx:if="{{detailSheet === 'route'}}"><view wx:if="{{slide.visitor.route}}" class="wrapped-note wrapped-route"><text class="wrapped-label">你的路线 · {{slide.visitor.route.days}} 天</text><text>{{slide.visitor.route.path}}</text><text wx:if="{{slide.visitor.route.skipped}}" class="wrapped-caption">你跳过了：{{slide.visitor.route.skipped}}</text></view></block>
+<block wx:if="{{detailSheet === 'decision'}}"><view wx:if="{{slide.visitor.decision}}" class="day-edition-choice"><text>同一个情境，两种版本 · 互动对照</text><view><view><text>作者 / ME</text><text>{{slide.visitor.decision.comparisonLabel}}</text></view><view><text>你 / YOU</text><text>{{slide.visitor.decision.label}}</text></view></view><text>{{slide.visitor.decision.same ? '我们会做同一个选择。' : '这里，我们会走向不同的版本。'}}</text></view></block>
+<block wx:if="{{detailSheet === 'preview'}}"><view wx:if="{{slide.visitor.previewCount > 0}}" class="wrapped-note"><text>你打开了 {{slide.visitor.previewCount}} 张</text><text class="wrapped-caption">按不同照片计数，重复打开不增加张数。</text><image class="wrapped-preview-photo" src="{{slide.visitor.mostPreviewedPhoto.src}}" mode="aspectFill"></image><text class="wrapped-caption">这一张，你看得最多{{slide.visitor.mostPreviewedPhoto.tied ? '（并列）' : ''}}：{{slide.visitor.mostPreviewedPhoto.title}}</text></view></block>
+<block wx:if="{{detailSheet === 'plan'}}"><view wx:if="{{slide.visitor.routeNarrative}}" class="plan-visitor-story">
+      <text class="plan-story-core">现实改写了我的计划。</text><text class="plan-story-core">{{slide.visitor.routeNarrative.headline}}</text>
+
+      <view class="plan-story-bridge"><text>↓</text><text>轮到你。</text></view><text class="wrapped-caption">{{slide.visitor.routeNarrative.bridge}}</text>
+      <view class="wrapped-note wrapped-route"><text>你的版本 · {{slide.visitor.routeNarrative.days}} 天</text><text class="wrapped-caption">{{slide.visitor.routeNarrative.priorities ? '你最在意：' + slide.visitor.routeNarrative.priorities : '你还没有选择最在意的事。'}}</text><text>{{slide.visitor.routeNarrative.path}}</text><text wx:if="{{slide.visitor.routeNarrative.skipped}}" class="wrapped-caption">你跳过了：{{slide.visitor.routeNarrative.skipped}}</text></view>
+    </view></block>
+<block wx:if="{{detailSheet === 'evidence'}}"><view wx:if="{{slide.visitor.evidence.length}}" class="wrapped-note type-evidence-page"><text class="wrapped-label">为什么是你？</text><view wx:for="{{slide.visitor.evidence}}" wx:key="type" class="wrapped-evidence wrapped-evidence-{{index % 2}}"><text>0{{index + 1}}</text><text>{{item.text}}</text></view><text wx:if="{{!slide.visitor.evidence.length}}" class="wrapped-caption">还没有可解释的选择。你留下的选择，会成为这里的理由。</text></view></block>
+    </scroll-view>
+  </view>
+</view>

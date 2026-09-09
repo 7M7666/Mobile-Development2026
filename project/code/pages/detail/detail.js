@@ -1,4 +1,6 @@
 const summerData = require('../../services/summer-data')
+const visitor = require('../../services/visitor-state')
+const situations = require('../../data/visitor-situations')
 
 const placeThemes = {
   nanning: 'nanning',
@@ -68,6 +70,7 @@ function readImageInfo(photo) {
 
 Page({
   data: {
+    situation: null, decision: null, decisionRestored: false, choosing: true, decisionSaveNotice: '',
     journey: null,
     selectedPhotos: [],
     galleryRows: [],
@@ -77,7 +80,7 @@ Page({
     error: false
   },
 
-  onLoad(options) {
+  onLoad(options = {}) {
     const journey = summerData.getJourneys().find((item) => item.id === options.id)
     if (!journey) {
       this.setData({ error: true })
@@ -95,6 +98,7 @@ Page({
     })
 
     this.setData({
+      situation: situations[journey.placeId],
       journey: {
         ...journey,
         name: journey.place ? journey.place.name : journey.placeId,
@@ -116,7 +120,13 @@ Page({
       topMoment
     })
 
+    if (!this.visitRecorded) {
+      visitor.recordDetailVisit(journey.placeId)
+      this.visitRecorded = true
+    }
+
     Promise.all(selectedPhotos.map(readImageInfo)).then((photos) => {
+      if (this.unloaded) return
       this.setData({
         galleryRows: buildGalleryRows(photos),
         galleryUrls: [coverPhoto, ...photos].filter(Boolean).map((photo) => photo.src)
@@ -124,9 +134,39 @@ Page({
     })
   },
 
+  onShow() {
+    if (!this.data.journey || this.unloaded) return
+    this.restoreDecision(true)
+    if (this.dwellStartedAt == null) this.dwellStartedAt = Date.now()
+  },
+  onHide() { this.finishDwell() },
+  onUnload() { this.finishDwell(); this.unloaded = true },
+  finishDwell() {
+    if (this.dwellStartedAt == null || !this.data.journey) return
+    const startedAt = this.dwellStartedAt
+    this.dwellStartedAt = null
+    visitor.recordDwellTime(this.data.journey.placeId, Math.max(0, (Date.now() - startedAt) / 1000))
+  },
+  restoreDecision(restored) {
+    const decision = visitor.getChoiceSummary().items.find((item) => item.placeId === this.data.journey.placeId)
+    this.setData({ decision, decisionRestored: Boolean(restored && decision.choice), choosing: !decision.choice })
+  },
+  selectDecision(event) {
+    if (!this.data.journey || !this.data.choosing) return
+    if (!this.data.situation.choices.some((item) => item.id === event.currentTarget.dataset.choice)) return
+    const result = visitor.recordDecision(this.data.journey.placeId, event.currentTarget.dataset.choice)
+    if (!result.changed && !result.state.decisions[this.data.journey.placeId]) return
+    this.restoreDecision(false)
+    this.setData({ decisionSaveNotice: result.persisted ? '已保存到你的档案' : '暂存本次访问，未能写入本地；请重新选择以重试。' })
+  },
+  reselectDecision() { this.setData({ choosing: true, decisionSaveNotice: '' }) },
+
   previewPhoto(event) {
     const current = event.currentTarget.dataset.src
-    wx.previewImage({ current, urls: this.data.galleryUrls })
+    const journey = this.data.journey
+    const photo = journey && journey.photos.find((item) => item.src === current)
+    if (!photo || !this.data.galleryUrls.includes(current)) return
+    wx.previewImage({ current, urls: this.data.galleryUrls, success: () => visitor.recordPhotoPreview(journey.placeId, photo.id) })
   },
 
   goBack() {

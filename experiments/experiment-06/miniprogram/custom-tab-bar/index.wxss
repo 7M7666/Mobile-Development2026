@@ -1,0 +1,16 @@
+.dock { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding-bottom: env(safe-area-inset-bottom); border-top: 1rpx solid #EEF0F4; }
+.dock-inner { height: 108rpx; display: flex; align-items: center; padding: 0 24rpx; }
+.tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #969DA8; height: 100%; font: 600 21rpx 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+.tab.selected { color: #0965F3; font-weight: 800; }
+.icon { width: 38rpx; height: 38rpx; position: relative; box-sizing: border-box; margin-bottom: 9rpx; }
+.home { width: 32rpx; height: 27rpx; margin-top: 11rpx; border: 3rpx solid currentColor; border-top: 0; border-radius: 2rpx; }
+.home:before { content: ''; position: absolute; width: 24rpx; height: 24rpx; border-left: 3rpx solid currentColor; border-top: 3rpx solid currentColor; transform: rotate(45deg); left: 1rpx; top: -12rpx; }
+.home .icon-inner { position: absolute; bottom: 0; left: 10rpx; width: 7rpx; height: 13rpx; border: 2rpx solid currentColor; border-bottom: 0; }
+.discover { border: 3rpx solid currentColor; border-radius: 50%; }
+.discover .icon-inner { position: absolute; left: 11rpx; top: 6rpx; width: 9rpx; height: 18rpx; border: 2rpx solid currentColor; transform: rotate(35deg) skewY(-24deg); }
+.publish { background: #0965F3; width: 56rpx; height: 44rpx; border-radius: 12rpx; margin-top: -6rpx; }
+.publish:before, .publish:after { content: ''; position: absolute; background: white; border-radius: 2rpx; }
+.publish:before { width: 24rpx; height: 3rpx; top: 20rpx; left: 16rpx; }
+.publish:after { height: 24rpx; width: 3rpx; left: 26rpx; top: 10rpx; }
+.mine:before { content: ''; position: absolute; width: 15rpx; height: 15rpx; top: 0; left: 10rpx; border: 3rpx solid currentColor; border-radius: 50%; }
+.mine:after { content: ''; position: absolute; bottom: 0; left: 1rpx; width: 31rpx; height: 14rpx; border: 3rpx solid currentColor; border-radius: 20rpx 20rpx 5rpx 5rpx; }

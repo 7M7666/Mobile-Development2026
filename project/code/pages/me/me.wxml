@@ -1,6 +1,8 @@
 <scroll-view class="page-scroll" scroll-y enable-flex="true" show-scrollbar="false">
 <view class="archive">
   <view class="archive-head"><text>SUMMER 2026</text><text>PERSONAL ARCHIVE</text></view>
+  <view class="archive-modes"><view class="archive-mode {{archiveMode === 'me' ? 'archive-mode-on' : ''}}" data-mode="me" bindtap="selectArchiveMode"><text>作者</text><text>ME</text></view><view class="archive-mode {{archiveMode === 'you' ? 'archive-mode-on' : ''}}" data-mode="you" bindtap="selectArchiveMode"><text>你</text><text>YOU</text></view></view>
+  <block wx:if="{{archiveMode === 'me'}}">
   <view class="archive-title"><text>MY SUMMER.</text><text>THE ARCHIVE.</text></view>
   <view class="archive-ledger"><text>{{stats.capturedPhotoCount}} PHOTOS CAPTURED.</text><text>{{stats.curatedPhotoCount}} MADE THE ARCHIVE.</text><text class="archive-cn">从拍下到留下，这里收着这个暑假最想再看的片段。</text></view>
   <view class="archive-collage"><image wx:for="{{archivePhotos}}" wx:key="id" class="archive-photo archive-photo-{{index}}" src="{{item.src}}" mode="aspectFill"></image><view class="archive-stamp"><text>SUMMER</text><text>2026</text></view></view>
@@ -14,6 +16,79 @@
   <view class="archive-tools"><view class="tool soundtrack" data-slide="11" bindtap="openWrappedSlide"><text>SOUNDTRACK</text><text>03 TRACKS →</text></view><view class="tool type" data-slide="12" bindtap="openWrappedSlide"><text>SUMMER TYPE</text><text>OFF SCRIPT →</text></view></view>
   <view class="wrapped-entry" bindtap="openWrapped"><text>PLAY SUMMER WRAPPED</text><text>→</text></view>
   <view class="cut-entry" bindtap="openCut"><text>MAKE YOUR CUT</text><text>WHAT DO YOU KEEP? →</text></view>
+  </block>
+  <view wx:elif="{{profile}}" class="visitor-archive">
+    <view class="trace-hero">
+      <text class="trace-kicker">你的旅行档案 / YOUR TRACE</text>
+      <view class="trace-type">
+        <text class="trace-kicker">你的版本</text>
+        <text class="trace-type-name">{{profile.type ? profile.type.label : '从第一个选择开始'}}</text>
+        <text class="trace-kicker">{{profile.type ? profile.type.en : 'YOUR STORY STARTS HERE'}}</text>
+        <text class="trace-copy">{{profile.type ? profile.type.description : '留下一个地点或一次选择，让这份档案有自己的方向。'}}</text>
+        <view wx:if="{{!profile.type}}" class="trace-link" data-kind="map" bindtap="continueTrace">去留下你的地点 →</view>
+      </view>
+    </view>
+    <view class="trace-spread">
+      <view class="place-panel">
+        <text class="trace-kicker">01 / 你的地点</text><text class="editorial-en">YOUR PLACE</text>
+        <text class="place-display">{{profile.pin.place || '下一站，想去哪？'}}</text>
+        <text wx:if="{{profile.pinVibe}}" class="trace-kicker">{{profile.pinVibe}}</text>
+        <text wx:if="{{profile.pin.note}}" class="place-quote">“{{profile.pin.note}}”</text>
+        <view class="trace-link" data-kind="map" bindtap="continueTrace">{{profile.pin.place ? '重新编辑' : '留下地点'}} ↗</view>
+      </view>
+      <view class="route-panel">
+        <text class="trace-kicker">02 / 你的路线</text><text class="editorial-en">YOUR ROUTE</text>
+        <view class="editorial-route"><view wx:for="{{profile.routeNames}}" wx:key="*this" class="editorial-stop"><text class="route-index">0{{index + 1}}</text><text>{{item}}</text></view></view>
+        <text wx:if="{{!profile.routeNames.length}}" class="trace-copy">{{profile.skippedNames ? '你已跳过全部地点，保留一站继续安排。' : '还没有安排路线。'}}</text>
+        <text class="trace-note">{{profile.route.days ? profile.route.days + ' 天' : '尚未选择天数'}} · {{profile.priorities || '优先项待定'}}</text>
+        <text wx:if="{{profile.skippedNames}}" class="trace-note">跳过：{{profile.skippedNames}}</text>
+        <text wx:if="{{profile.omittedNames}}" class="trace-note">受天数限制，暂未安排：{{profile.omittedNames}}</text>
+        <view class="trace-link" data-kind="journey" bindtap="continueTrace">{{profile.routeComplete ? '调整路线' : '继续安排'}} ↗</view>
+      </view>
+    </view>
+    <view class="trace-section-head"><text>03 / 你的四次决定</text><text>{{profile.choices.completed}} / 4</text></view>
+    <view class="decision-board">
+      <view wx:for="{{profile.choices.items}}" wx:key="placeId" class="decision-tile decision-tile-{{index}}" data-id="{{item.journeyId}}" bindtap="openDetail">
+        <image wx:if="{{item.photo}}" src="{{item.photo.src}}" mode="aspectFill"></image>
+        <text class="decision-number">{{item.number}}</text>
+        <view class="decision-caption"><text>{{item.name}}</text><text>{{item.label}}</text><text class="decision-action">{{item.choice ? '再选一次' : '去做选择'}} ↗</text></view>
+      </view>
+    </view>
+    <view class="trace-section-head"><text>04 / 两种版本</text><text>ME / YOU</text></view>
+    <view wx:for="{{profile.displayComparisons}}" wx:key="id" class="comparison-spread">
+      <text class="comparison-label">{{item.title}} · {{item.note}}</text>
+      <view class="comparison-columns"><view><text>作者 / ME</text><text>{{item.mine}}</text></view><view><text>你 / YOU</text><text>{{item.yours}}</text></view></view>
+    </view>
+    <view wx:if="{{profile.routeNames.length}}" class="comparison-spread">
+      <text class="comparison-label">作者的真实路线 / 你的路线</text>
+      <view class="comparison-columns"><view><text>MY ROUTE</text><view class="comparison-route" wx:for="{{profile.myRouteNames}}" wx:key="*this">{{item}}</view></view><view><text>YOUR ROUTE</text><view class="comparison-route" wx:for="{{profile.routeNames}}" wx:key="*this">{{item}}</view></view></view>
+    </view>
+    <text wx:if="{{!profile.comparisons.length}}" class="trace-copy">留下地点、路线或情境选择后，我们的版本会在这里相遇。</text>
+    <text wx:if="{{profile.choices.completed}}" class="trace-note">情境对照：{{profile.choices.same}} 次相同，{{profile.choices.different}} 次不同。选择没有对错。</text>
+    <view class="trace-section-head"><text>05 / 你停下来的地方</text><text>YOUR ATTENTION</text></view>
+    <view wx:if="{{profile.attentionVisual}}" class="attention-feature">
+      <image src="{{profile.attentionVisual.photo.src}}" mode="aspectFill"></image>
+      <view><text class="attention-place">{{profile.attentionVisual.name}}</text><text>{{profile.attentionVisual.caption}}</text></view>
+    </view>
+    <view wx:if="{{profile.attention.hasData}}" class="attention-notes">
+      <text wx:if="{{profile.attention.mostVisited}}">打开最多{{profile.attention.mostVisited.tied ? '（并列）' : ''}} · {{profile.attention.mostVisited.name}}</text>
+      <text wx:if="{{profile.attention.mostRevisited}}">最常回到{{profile.attention.mostRevisited.tied ? '（并列）' : ''}} · {{profile.attention.mostRevisited.name}}</text>
+      <text wx:if="{{profile.attention.mostPreviewedPhoto}}">最常打开的照片{{profile.attention.mostPreviewedPhoto.tied ? '（并列）' : ''}} · {{profile.attention.mostPreviewedPhoto.title}}</text>
+      <text wx:if="{{profile.attention.longestDwell}}">停留最久{{profile.attention.longestDwell.tied ? '（并列）' : ''}} · {{profile.attention.longestDwell.name}}</text>
+    </view>
+    <view wx:else class="attention-empty"><text>再逛一会儿。</text><view class="trace-link" data-kind="behavior" bindtap="continueTrace">去看看一站的照片 ↗</view></view>
+    <view class="trace-section-head"><text>06 / 你的倾向</text><text>YOUR SIGNAL</text></view>
+    <view class="signal-pairs"><view wx:for="{{profile.signalGroups}}" wx:for-item="group" wx:key="id" class="signal-group"><view wx:for="{{group.items}}" wx:key="id" class="signal-item {{item.stronger ? 'signal-strong' : ''}}"><text>{{item.label}}</text><text class="signal-value">{{item.value}}</text><view class="signal-track"><view class="signal-fill" style="width: {{item.value}}%;"></view></view></view></view></view>
+    <text class="trace-note">0–100 表示独立的倾向强度。主动选择决定方向，浏览只作轻量补充，不是心理测量概率。</text>
+    <view class="trace-section-head"><text>07 / 为什么是你</text><text>WHY THIS TYPE?</text></view>
+    <view class="editorial-notes"><view wx:for="{{profile.evidence}}" wx:key="type" class="editorial-note editorial-note-{{index % 2}}"><text class="evidence-number">0{{index + 1}}</text><text class="evidence-copy">{{item.text}}</text></view></view>
+    <text wx:if="{{!profile.evidence.length}}" class="trace-copy">你留下的选择，会成为这里的理由。</text>
+    <view class="trace-completion">
+      <text class="trace-kicker">你的痕迹 / YOUR TRACE</text>
+      <view class="completion-strip"><view data-kind="map" bindtap="continueTrace"><text>地点</text><text>{{profile.pin.place ? '✓' : '去留下 ↗'}}</text></view><view data-kind="journey" bindtap="continueTrace"><text>路线</text><text>{{profile.routeComplete ? '✓' : '去安排 ↗'}}</text></view><view data-kind="choices" bindtap="continueTrace"><text>选择</text><text>{{profile.choices.completed}} / 4 ↗</text></view><view data-kind="behavior" bindtap="continueTrace"><text>浏览</text><text>{{profile.attention.hasData ? '✓' : '去看看 ↗'}}</text></view></view>
+      <text class="trace-note">{{profile.complete ? '你的版本已经完整。' : '继续逛逛，让你的版本慢慢完整。'}}</text>
+    </view>
+  </view>
 </view>
 </scroll-view>
 <app-nav active="me"></app-nav>
